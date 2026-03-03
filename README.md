@@ -1,2 +1,2 @@
 # OndeTa
-Aplicação Colaborativa para Localização de Animais Perdidos com Feed Interativo e Geolocalização.
+Aplicação colaborativa para localização de animais perdidos com feed interativo e geolocalização.
