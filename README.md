@@ -239,6 +239,11 @@ refactor: melhorando estrutura da camada service
 style: ajustando o componente name
 ```
 
+# 📝 Padrão de pull request e merge
+```text
+Usar a opção "Squash and merge"
+```
+
 <br>
 
 # ⚠️ Regras do projeto
