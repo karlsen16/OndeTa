@@ -4,9 +4,14 @@ Aplicação colaborativa para localização de animais perdidos com feed interat
 
 
 ```mermaid
-
-graph RD;
-    A-->B
+graph TD;
+    A[Enter Chart Definition] --> B(Preview)
+    B --> C{decide}
+    C --> D[Keep]
+    C --> E[Edit Definition]
+    E --> B
+    D --> F[Save Image and Code]
+    F --> B
 ```
 
 
