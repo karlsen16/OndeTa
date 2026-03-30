@@ -339,9 +339,9 @@ DELETE /pets/:id
 
 - Regras da API
 
-* usar substantivos (não verbos)
-* plural
-* status HTTP correto
+  * usar substantivos (não verbos)
+  * plural
+  * status HTTP correto
 
 ---
 
@@ -450,5 +450,5 @@ pip freeze > requirements.txt
 
 ---
 
-**Versão:** 1.0
-**Atualizado em:** 2026
+**Versão:** 1.1
+**Atualizado em:** 29/3/2026
