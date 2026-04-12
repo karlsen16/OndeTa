@@ -1,0 +1,58 @@
+@startuml
+
+package "Back-end (Flask API)" {
+
+    package "Routes" {
+        [AuthRoutes]
+        [PetRoutes]
+        [UserRoutes]
+    }
+
+    package "Controllers" {
+        [AuthController]
+        [PetController]
+        [UserController]
+    }
+
+    package "Services" {
+        [AuthService]
+        [PetService]
+        [ImageService]
+    }
+
+    package "Repositories" {
+        [UserRepository]
+        [PetRepository]
+        [ImageRepository]
+    }
+
+    package "Models" {
+        [User]
+        [Pet]
+        [Image]
+    }
+
+    database "Database" as DB
+
+    AuthRoutes --> AuthController
+    PetRoutes --> PetController
+    UserRoutes --> UserController
+
+    AuthController --> AuthService
+    PetController --> PetService
+    UserController --> AuthService
+
+    PetService --> PetRepository
+    PetService --> ImageService
+
+    AuthService --> UserRepository
+
+    PetRepository --> DB
+    UserRepository --> DB
+    ImageRepository --> DB
+
+    ImageService --> [External Image API]
+
+}
+
+@enduml

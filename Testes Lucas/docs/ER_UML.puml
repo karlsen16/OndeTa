@@ -1,0 +1,30 @@
+@startuml
+
+class User {
+    id: int
+    nome: string
+    email: string
+    senha: string
+    telefone: string
+}
+
+class Pet {
+    id: int
+    nome: string
+    tipo: string
+    descricao: string
+    status: string
+    data: date
+    latitude: float
+    longitude: float
+}
+
+class Image {
+    id: int
+    url: string
+}
+
+User "1" --> "0..*" Pet : possui
+Pet "1" --> "0..*" Image : tem
+
+@enduml
