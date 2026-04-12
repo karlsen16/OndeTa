@@ -446,6 +446,6 @@ conn = psycopg2.connect(
 * Senha: `admin`
 </details>
 
-**Versão:** 1.2
-**Atualizado em:** 11/4/2026
+**Versão:** 1.3
+**Atualizado em:** 12/4/2026
 
