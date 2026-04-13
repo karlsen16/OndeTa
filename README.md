@@ -187,20 +187,18 @@ pet_repository.py    → salva no banco
 
 ```bash
 docs/
-├── docs/
-│   ├── arquitetura.puml
-│   ├── componentes_front.puml
-│   ├── componentes_back.puml
-│   └── sequencia.puml
-│
-└── README.md
+├── architecture.puml
+├── front_components.puml
+├── back_components.puml
+├── ER.puml
+└── sequence_diagram.puml
 ```
 
 # Convenções de código
 
 ## Idioma
 ```text
-* Código: inglês
+* Código, nome de arquivos e pastas: inglês
 * Documentação: português
 ```
    
