@@ -57,12 +57,12 @@ architecture-beta
 
 ## Root
 
-```text
+```bash
 ondeTa-app/
 ├── frontend/
 ├── backend/
 ├── docs/
-├── README.md
+└── README.md
 ```
 
 ## Front-end
