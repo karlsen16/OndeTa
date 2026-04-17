@@ -1,0 +1,30 @@
+@startuml
+
+package "Front-end (React)" {
+
+    [App] --> [AuthContext]
+
+    package "Pages" {
+        [Login]
+        [Cadastro]
+        [Feed]
+        [CriarPost]
+        [Perfil]
+    }
+
+    package "Components" {
+        [Navbar]
+        [PetCard]
+        [MapView]
+        [UploadImage]
+    }
+
+    [Feed] --> [PetCard]
+    [Feed] --> [MapView]
+    [CriarPost] --> [UploadImage]
+
+    [App] --> [API Service]
+
+}
+
+@enduml
