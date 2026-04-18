@@ -1,0 +1,18 @@
+@startuml
+
+actor Usuario
+
+component "Front-end (React)" as FE
+component "Back-end (Flask API)" as BE
+database "Banco de Dados" as DB
+component "Serviço de Imagens" as IMG
+component "API de Mapas" as MAP
+
+Usuario --> FE
+FE --> BE : HTTP/JSON
+BE --> DB
+BE --> IMG
+FE --> MAP
+IMG --> BE : URL
+
+@enduml

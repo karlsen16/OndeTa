@@ -1,0 +1,13 @@
+@startuml
+
+package "Back-end (Flask)" {
+
+    [Routes] --> [Controllers]
+    [Controllers] --> [Services]
+    [Services] --> [Models]
+    [Models] --> [Database]
+
+    [Services] --> [External Services]
+}
+
+@enduml

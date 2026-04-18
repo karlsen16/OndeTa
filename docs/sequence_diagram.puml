@@ -1,0 +1,24 @@
+@startuml
+
+actor Usuario
+participant "Front-end" as FE
+participant "Back-end" as BE
+database DB
+participant "Serviço de Imagem" as IMG
+
+Usuario -> FE : Preenche formulário
+FE -> BE : POST /pets
+
+BE -> DB : Salvar dados do pet
+DB --> BE : OK
+
+FE -> IMG : Upload imagem
+IMG --> FE : URL
+
+FE -> BE : POST /upload (URL)
+BE -> DB : Salvar URL
+
+BE --> FE : Sucesso
+FE --> Usuario : Post criado
+
+@enduml
