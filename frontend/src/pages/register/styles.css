@@ -1,4 +1,4 @@
-.login-container {
+.register-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -7,7 +7,7 @@
   padding: 1rem;
 }
 
-.login-card {
+.register-card {
   background-color: #ffffff;
   border-radius: 16px;
   box-shadow: 0 4px 24px rgba(91, 74, 138, 0.15);
@@ -19,39 +19,45 @@
   align-items: center;
 }
 
-.login-logo {
+.register-logo {
   width: 220px;
   margin-bottom: 0.5rem;
 }
 
-.login-subtitle {
+.register-subtitle {
   font-family: 'Baloo 2', sans-serif;
   font-weight: 700;
   font-size: 0.95rem;
-  color: #7B6BAB;
+  color: #7b6bab;
   margin: 0 0 2rem;
 }
 
-.login-form {
+.register-form {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
 }
 
-.login-field {
+.register-field {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
 }
 
-.login-field label {
+.register-field label {
   font-size: 0.875rem;
   font-weight: 600;
   color: #5b4a8a;
 }
 
-.login-field input {
+.register-optional {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: #b0a4cc;
+}
+
+.register-field input {
   padding: 0.65rem 0.875rem;
   border: 1.5px solid #c4b8e8;
   border-radius: 8px;
@@ -63,17 +69,17 @@
   -webkit-text-fill-color: #2e1f4f;
 }
 
-.login-field input::placeholder {
+.register-field input::placeholder {
   color: #b0a4cc;
   -webkit-text-fill-color: #b0a4cc;
 }
 
-.login-field input:focus {
+.register-field input:focus {
   border-color: #9b8fd4;
   background-color: #ffffff;
 }
 
-.login-erro {
+.register-error {
   font-size: 0.875rem;
   color: #c0392b;
   background-color: #fdecea;
@@ -82,9 +88,9 @@
   margin: 0;
 }
 
-.login-btn {
+.register-btn {
   padding: 0.75rem;
-  background-color: #4A3B6B;
+  background-color: #4a3b6b;
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -94,28 +100,28 @@
   transition: background-color 0.2s, opacity 0.2s;
 }
 
-.login-btn:hover:not(:disabled) {
-  background-color: #362B52;
+.register-btn:hover:not(:disabled) {
+  background-color: #362b52;
 }
 
-.login-btn:disabled {
+.register-btn:disabled {
   opacity: 0.65;
   cursor: not-allowed;
 }
 
-.login-cadastro {
+.register-link {
   text-align: center;
   font-size: 0.875rem;
   color: #5b4a8a;
   margin: 1.5rem 0 0;
 }
 
-.login-cadastro a {
+.register-link a {
   color: #79c23a;
   font-weight: 600;
   text-decoration: none;
 }
 
-.login-cadastro a:hover {
+.register-link a:hover {
   text-decoration: underline;
 }

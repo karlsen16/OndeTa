@@ -13,7 +13,7 @@ class AuthController:
 
             return jsonify({
                 "id": user.id,
-                "nome": user.nome,
+                "name": user.name,
                 "email": user.email
             }), 201
 
@@ -32,7 +32,7 @@ class AuthController:
 
             return jsonify({
                 "id": user.id,
-                "nome": user.nome,
+                "name": user.name,
                 "email": user.email
             }), 200
 

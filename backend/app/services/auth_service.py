@@ -1,8 +1,3 @@
-# AuthService
-# valida email
-# hash de senha
-# login seguro
-
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.repositories.user_repository import UserRepository
 
@@ -18,22 +13,22 @@ class AuthService:
         hashed_password = generate_password_hash(data.get("senha"))
 
         user = UserRepository.create({
-            "nome": data.get("nome"),
+            "name": data.get("nome"),
             "email": data.get("email"),
-            "senha": hashed_password,
-            "telefone": data.get("telefone")
+            "password": hashed_password,
+            "contact": data.get("telefone")
         })
 
         return user
 
     @staticmethod
-    def login(email, senha):
+    def login(email, password):
         user = UserRepository.get_by_email(email)
 
         if not user:
             raise ValueError("Usuário não encontrado")
 
-        if not check_password_hash(user.senha, senha):
+        if not check_password_hash(user.password, password):
             raise ValueError("Senha inválida")
 
         return user

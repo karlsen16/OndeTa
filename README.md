@@ -202,19 +202,19 @@ docs/
 * Documentação: português
 ```
    
-## Nomes de variáveis
+## Variáveis
 ```text
 camelCase
 ```
 
-## Nomes de classes
+## Classes
 ```text
 PascalCase
 ```
 
-## Nomes de funções
+## Funções
 ```text 
-PascalCase
+snake_case
 
 * Verbos no infinitivo
 * Podemos expandir o exemplo para adicionar template de comentários
