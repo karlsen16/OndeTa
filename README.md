@@ -446,4 +446,3 @@ conn = psycopg2.connect(
 
 **Versão:** 1.3
 **Atualizado em:** 12/4/2026
-
