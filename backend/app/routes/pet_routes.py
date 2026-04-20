@@ -17,3 +17,8 @@ def get_all_pets():
 @pet_bp.route("/<int:pet_id>", methods=["GET"])
 def get_pet_by_id(pet_id):
     return PetController.get_pet_by_id(pet_id)
+
+
+@pet_bp.route("/<int:pet_id>", methods=["DELETE"])
+def delete_pet(pet_id):
+    return PetController.delete_pet(pet_id)

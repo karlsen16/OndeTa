@@ -13,7 +13,7 @@ class AuthController:
 
             return jsonify({
                 "id": user.id,
-                "nome": user.nome,
+                "name": user.name,
                 "email": user.email
             }), 201
 
@@ -27,12 +27,12 @@ class AuthController:
         try:
             user = AuthService.login(
                 data.get("email"),
-                data.get("senha")
+                data.get("password")
             )
 
             return jsonify({
                 "id": user.id,
-                "nome": user.nome,
+                "name": user.name,
                 "email": user.email
             }), 200
 

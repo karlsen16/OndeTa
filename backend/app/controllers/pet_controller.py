@@ -13,7 +13,7 @@ class PetController:
 
             return jsonify({
                 "id": pet.id,
-                "nome": pet.nome,
+                "name": pet.name,
                 "status": pet.status
             }), 201
 
@@ -22,14 +22,25 @@ class PetController:
 
     @staticmethod
     def get_all_pets():
-        pets = PetService.get_all_pets()
+        user_id = request.args.get("user_id", type=int)
+
+        if user_id:
+            pets = PetService.get_pets_by_user(user_id)
+        else:
+            pets = PetService.get_all_pets()
 
         result = []
         for pet in pets:
             result.append({
                 "id": pet.id,
-                "nome": pet.nome,
-                "status": pet.status
+                "name": pet.name,
+                "type": pet.type,
+                "description": pet.description,
+                "status": pet.status,
+                "date": pet.date.isoformat() if pet.date else None,
+                "latitude": pet.latitude,
+                "longitude": pet.longitude,
+                "user_id": pet.user_id,
             })
 
         return jsonify(result), 200
@@ -41,10 +52,32 @@ class PetController:
 
             return jsonify({
                 "id": pet.id,
-                "nome": pet.nome,
-                "descricao": pet.descricao,
-                "status": pet.status
+                "name": pet.name,
+                "type": pet.type,
+                "description": pet.description,
+                "status": pet.status,
+                "date": pet.date.isoformat() if pet.date else None,
+                "latitude": pet.latitude,
+                "longitude": pet.longitude,
             }), 200
+
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 404
+
+    @staticmethod
+    def delete_pet(pet_id):
+        data = request.get_json() or {}
+        user_id = data.get("user_id")
+
+        if not user_id:
+            return jsonify({"error": "user_id é obrigatório"}), 400
+
+        try:
+            PetService.delete_pet(pet_id, user_id)
+            return jsonify({}), 204
+
+        except PermissionError as e:
+            return jsonify({"error": str(e)}), 403
 
         except ValueError as e:
             return jsonify({"error": str(e)}), 404

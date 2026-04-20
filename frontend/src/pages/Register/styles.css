@@ -1,0 +1,127 @@
+.register-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ede9f8;
+  padding: 1rem;
+}
+
+.register-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(91, 74, 138, 0.15);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.register-logo {
+  width: 220px;
+  margin-bottom: 0.5rem;
+}
+
+.register-subtitle {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #7b6bab;
+  margin: 0 0 2rem;
+}
+
+.register-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.register-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.register-field label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #5b4a8a;
+}
+
+.register-optional {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: #b0a4cc;
+}
+
+.register-field input {
+  padding: 0.65rem 0.875rem;
+  border: 1.5px solid #c4b8e8;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  outline: none;
+  background-color: #f9f7ff;
+  color: #2e1f4f;
+  -webkit-text-fill-color: #2e1f4f;
+}
+
+.register-field input::placeholder {
+  color: #b0a4cc;
+  -webkit-text-fill-color: #b0a4cc;
+}
+
+.register-field input:focus {
+  border-color: #9b8fd4;
+  background-color: #ffffff;
+}
+
+.register-error {
+  font-size: 0.875rem;
+  color: #c0392b;
+  background-color: #fdecea;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  margin: 0;
+}
+
+.register-btn {
+  padding: 0.75rem;
+  background-color: #4a3b6b;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.register-btn:hover:not(:disabled) {
+  background-color: #362b52;
+}
+
+.register-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.register-link {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #5b4a8a;
+  margin: 1.5rem 0 0;
+}
+
+.register-link a {
+  color: #79c23a;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}

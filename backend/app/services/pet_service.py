@@ -18,11 +18,11 @@ class PetService:
             raise ValueError("Usuário não encontrado")
 
         pet_data = {
-            "nome": data.get("nome"),
-            "tipo": data.get("tipo"),
-            "descricao": data.get("descricao"),
-            "status": data.get("status", "perdido"),
-            "data": datetime.utcnow(),
+            "name": data.get("name"),
+            "type": data.get("type"),
+            "description": data.get("description"),
+            "status": data.get("status", "lost"),
+            "date": datetime.utcnow(),
             "latitude": data.get("latitude"),
             "longitude": data.get("longitude"),
             "user_id": user.id
@@ -44,8 +44,21 @@ class PetService:
         return PetRepository.get_all()
 
     @staticmethod
+    def get_pets_by_user(user_id):
+        return PetRepository.get_by_user_id(user_id)
+
+    @staticmethod
     def get_pet_by_id(pet_id):
         pet = PetRepository.get_by_id(pet_id)
         if not pet:
             raise ValueError("Pet não encontrado")
         return pet
+
+    @staticmethod
+    def delete_pet(pet_id, user_id):
+        pet = PetRepository.get_by_id(pet_id)
+        if not pet:
+            raise ValueError("Pet não encontrado")
+        if pet.user_id != user_id:
+            raise PermissionError("Sem permissão para excluir esta postagem")
+        PetRepository.delete(pet)

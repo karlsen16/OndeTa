@@ -24,6 +24,11 @@ class UserRepository:
         return User.query.all()
 
     @staticmethod
+    def update_password(user, hashed_password):
+        user.password = hashed_password
+        db.session.commit()
+
+    @staticmethod
     def delete(user):
         db.session.delete(user)
         db.session.commit()

@@ -4,11 +4,11 @@ class Pet(db.Model):
     __tablename__ = "pets"
 
     id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(100))
-    tipo = db.Column(db.String(50))
-    descricao = db.Column(db.Text)
-    status = db.Column(db.String(20))  # perdido/encontrado?
-    data = db.Column(db.DateTime)
+    name = db.Column(db.String(100))
+    type = db.Column(db.String(50))
+    description = db.Column(db.Text)
+    status = db.Column(db.String(20))
+    date = db.Column(db.DateTime)
 
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
