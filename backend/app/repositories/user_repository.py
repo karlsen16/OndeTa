@@ -5,8 +5,8 @@ from app.models import User
 class UserRepository:
 
     @staticmethod
-    def create(user_data):
-        user = User(**user_data)
+    def create(data):
+        user = User(**data)
         db.session.add(user)
         db.session.commit()
         return user
@@ -22,6 +22,13 @@ class UserRepository:
     @staticmethod
     def get_all():
         return User.query.all()
+
+    @staticmethod
+    def update(user, data):
+        for key, value in data.items():
+            setattr(user, key, value)
+        db.session.commit()
+        return user
 
     @staticmethod
     def delete(user):

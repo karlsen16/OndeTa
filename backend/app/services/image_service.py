@@ -1,7 +1,3 @@
-# ImageService
-# valida pet
-# gerencia imagens
-
 from app.repositories.image_repository import ImageRepository
 from app.repositories.pet_repository import PetRepository
 
@@ -13,7 +9,8 @@ class ImageService:
         pet = PetRepository.get_by_id(pet_id)
         if not pet:
             raise ValueError("Pet não encontrado")
-
+        if pet.user_id != user_id:
+            raise PermissionError("Sem permissão para adicionar imagens")
         return ImageRepository.create({
             "url": url,
             "pet_id": pet_id
@@ -28,5 +25,7 @@ class ImageService:
         image = ImageRepository.get_by_id(image_id)
         if not image:
             raise ValueError("Imagem não encontrada")
-
+        pet = image.pet
+        if pet.user_id != user_id:
+            raise PermissionError("Sem permissão para deletar imagem")
         ImageRepository.delete(image)
