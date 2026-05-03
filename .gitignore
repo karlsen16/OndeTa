@@ -1,5 +1,4 @@
 /.idea/
-/ignorar/
 .env
 **/__pycache__/
 **/.venv/

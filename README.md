@@ -214,7 +214,7 @@ PascalCase
 
 ## Nomes de funções
 ```text 
-PascalCase
+snake_case
 
 * Verbos no infinitivo
 * Podemos expandir o exemplo para adicionar template de comentários

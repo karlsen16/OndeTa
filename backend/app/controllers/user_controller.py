@@ -1,32 +1,59 @@
-from flask import jsonify
-from app.repositories.user_repository import UserRepository
+from flask import request, jsonify
+from marshmallow import ValidationError
+from flask_jwt_extended import get_jwt_identity
+from app.services.user_service import UserService
+from app.schemas.user_schema import (
+    UserResponseSchema,
+    UserUpdateSchema
+)
+
+user_response_schema = UserResponseSchema()
+users_response_schema = UserResponseSchema(many=True)
+user_update_schema = UserUpdateSchema()
 
 
 class UserController:
 
     @staticmethod
     def get_all_users():
-        users = UserRepository.get_all()
+        users = UserService.get_all_users()
 
-        result = []
-        for user in users:
-            result.append({
-                "id": user.id,
-                "nome": user.nome,
-                "email": user.email
-            })
-
-        return jsonify(result), 200
+        return jsonify(users_response_schema.dump(users)), 200
 
     @staticmethod
     def get_user_by_id(user_id):
-        user = UserRepository.get_by_id(user_id)
+        try:
+            user = UserService.get_user_by_id(user_id)
 
-        if not user:
-            return jsonify({"error": "Usuário não encontrado"}), 404
+            return jsonify(user_response_schema.dump(user)), 200
 
-        return jsonify({
-            "id": user.id,
-            "nome": user.nome,
-            "email": user.email
-        }), 200
+        except ValueError as e:
+            return jsonify({
+                "error": str(e)
+            }), 404
+
+    @staticmethod
+    def update_user(user_id):
+        try:
+            current_user_id = int(get_jwt_identity())
+            if current_user_id != user_id:
+                return jsonify({"error": "Sem permissão para editar este usuário"}), 403
+            data = user_update_schema.load(request.get_json())
+            user = UserService.update_user(user_id, data)
+
+            return jsonify(user_response_schema.dump(user)), 200
+
+        except ValidationError as err:
+            return jsonify(
+                err.messages
+            ), 400
+
+        except ValueError as e:
+            return jsonify({
+                "error": str(e)
+            }), 404
+
+        except Exception as e:
+            return jsonify({
+                "error": str(e)
+            }), 500
