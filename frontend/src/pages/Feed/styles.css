@@ -1,0 +1,238 @@
+.feed-container {
+  min-height: 100vh;
+  background-color: #ede9f8;
+  display: flex;
+  flex-direction: column;
+}
+
+.feed-header {
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(91, 74, 138, 0.12);
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.feed-logo {
+  width: 130px;
+}
+
+.feed-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.feed-profile-btn {
+  background: none;
+  border: 1.5px solid #9b8fd4;
+  border-radius: 8px;
+  color: #5b4a8a;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.4rem 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.feed-profile-btn:hover {
+  background-color: #f0ebff;
+}
+
+.feed-logout-btn {
+  background: none;
+  border: 1.5px solid #c4b8e8;
+  border-radius: 8px;
+  color: #7b6bab;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.4rem 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.feed-logout-btn:hover {
+  background-color: #f0ebff;
+}
+
+.feed-main {
+  flex: 1;
+  padding: 2rem 1.5rem;
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.feed-title {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #4a3b6b;
+  margin: 0 0 1.5rem;
+}
+
+.feed-loading,
+.feed-empty {
+  font-size: 0.95rem;
+  color: #7b6bab;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.feed-error {
+  font-size: 0.875rem;
+  color: #c0392b;
+  background-color: #fdecea;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.feed-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+
+.feed-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(91, 74, 138, 0.1);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.feed-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.feed-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 20px;
+  padding: 0.2rem 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.feed-badge--lost {
+  background-color: #fdecea;
+  color: #c0392b;
+}
+
+.feed-badge--found {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.feed-card-type {
+  font-size: 0.8rem;
+  color: #7b6bab;
+  background-color: #f0ebff;
+  border-radius: 20px;
+  padding: 0.2rem 0.6rem;
+}
+
+.feed-card-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2e1f4f;
+  margin: 0;
+}
+
+.feed-card-description {
+  font-size: 0.875rem;
+  color: #5b4a8a;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.feed-card-date {
+  font-size: 0.8rem;
+  color: #b0a4cc;
+  margin: 0;
+}
+
+.feed-nav-btn {
+  background: none;
+  border: 1.5px solid #9b8fd4;
+  border-radius: 8px;
+  color: #5b4a8a;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.4rem 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.feed-nav-btn:hover {
+  background-color: #f0ebff;
+}
+
+.feed-nav-btn--active {
+  background-color: #4a3b6b;
+  border-color: #4a3b6b;
+  color: #ffffff;
+}
+
+.feed-nav-btn--active:hover {
+  background-color: #362b52;
+}
+
+.feed-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.feed-section-header .feed-title {
+  margin: 0;
+}
+
+.feed-back-btn {
+  background: none;
+  border: 1.5px solid #9b8fd4;
+  border-radius: 8px;
+  color: #5b4a8a;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.4rem 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.feed-back-btn:hover {
+  background-color: #f0ebff;
+}
+
+.feed-card-delete-btn {
+  margin-top: auto;
+  padding: 0.5rem;
+  background: none;
+  border: 1.5px solid #e8a0a0;
+  border-radius: 8px;
+  color: #c0392b;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.feed-card-delete-btn:hover:not(:disabled) {
+  background-color: #fdecea;
+}
+
+.feed-card-delete-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

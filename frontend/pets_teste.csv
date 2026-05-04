@@ -1,0 +1,51 @@
+name,type,description,status,date,latitude,longitude,user_id
+Luna,gato,"Gata branca com olhos azuis, porte pequeno, muito dócil.",perdido,2025-11-03 08:30:00,-25.4284,-49.2733,7
+Max,cachorro,"Labrador amarelo, porte grande, usa coleira vermelha.",perdido,2025-11-05 14:00:00,-25.4412,-49.2891,2
+Mimi,gato,"Gata cinza listrada, porte pequeno, muito assustada.",perdido,2025-11-07 09:15:00,-25.4198,-49.2615,5
+Rex,cachorro,"Pastor alemão, porte grande, pelagem preta e marrom.",perdido,2025-11-08 17:30:00,-25.4356,-49.3012,10
+Felix,gato,"Gato laranja, porte médio, orelhinha cortada no lado direito.",encontrado,2025-11-10 11:00:00,-25.4523,-49.2748,3
+Bella,cachorro,"Poodle branca, porte pequeno, laço rosa no pescoço.",perdido,2025-11-11 08:45:00,-25.4089,-49.2540,8
+Bolinha,gato,"Gato preto com manchas brancas, muito brincalhão.",perdido,2025-11-12 13:20:00,-25.4467,-49.2834,1
+Duke,cachorro,"Rottweiler jovem, porte grande, sem coleira.",perdido,2025-11-13 16:00:00,-25.4301,-49.3078,6
+Nina,gato,"Gata persa branca, porte pequeno, olhos verdes.",encontrado,2025-11-14 10:30:00,-25.4612,-49.2692,4
+Charlie,cachorro,"Beagle tricolor, porte médio, orelhas longas e caídas.",perdido,2025-11-15 07:00:00,-25.4178,-49.2567,9
+Thor,gato,"Gato siamês, porte médio, olhos azuis intensos.",perdido,2025-11-16 19:00:00,-25.4389,-49.2980,2
+Rocky,cachorro,"Bulldog inglês, porte médio, pelagem malhada.",perdido,2025-11-17 12:45:00,-25.4534,-49.2711,7
+Simba,gato,"Gato dourado, porte médio, pelagem longa e fofa.",perdido,2025-11-18 09:00:00,-25.4245,-49.2645,5
+Lola,cachorro,"Dachshund castanha, porte pequeno, muito ativa.",encontrado,2025-11-19 14:30:00,-25.4478,-49.3045,1
+Gigi,gato,"Gata tricolor, porte pequeno, ronrona muito.",perdido,2025-11-20 08:00:00,-25.4123,-49.2589,10
+Bob,cachorro,"Vira-lata preto, porte médio, muito amigável com crianças.",perdido,2025-11-21 11:15:00,-25.4567,-49.2763,3
+Cleo,gato,"Gata preta, porte médio, olhos amarelos brilhantes.",perdido,2025-11-22 16:45:00,-25.4312,-49.2918,8
+Toby,cachorro,"Golden retriever, porte grande, pelagem dourada.",encontrado,2025-11-23 10:00:00,-25.4201,-49.2634,6
+Salem,gato,"Gato preto, porte médio, muito curioso.",perdido,2025-11-24 13:00:00,-25.4445,-49.3067,4
+Jack,cachorro,"Shih tzu caramelo, porte pequeno, pelo comprido.",perdido,2025-11-25 07:30:00,-25.4589,-49.2780,9
+Pérola,gato,"Gata branca com manchas cinzas, porte pequeno.",encontrado,2025-11-26 15:00:00,-25.4267,-49.2701,2
+Buddy,cachorro,"Husky siberiano de olhos diferentes, porte grande.",perdido,2025-11-27 09:45:00,-25.4134,-49.2556,7
+Tom,gato,"Gato rajado cinza e preto, porte médio, muito veloz.",perdido,2025-11-28 17:00:00,-25.4501,-49.2947,5
+Daisy,cachorro,"Pinscher caramelo, porte pequeno, coleira azul.",perdido,2025-11-29 08:30:00,-25.4378,-49.3023,1
+Chico,gato,"Gato amarelo, porte médio, cicatriz na pata dianteira esquerda.",perdido,2025-11-30 12:00:00,-25.4623,-49.2678,10
+Zeus,cachorro,"Dobermann preto, porte grande, focinho cinza.",perdido,2025-12-01 14:15:00,-25.4156,-49.2612,3
+Fifi,gato,"Gata angorá creme, porte pequeno, olhos mel.",encontrado,2025-12-02 10:45:00,-25.4434,-49.2839,8
+Nala,cachorro,"Labrador chocolate, porte grande, usa coleira verde.",perdido,2025-12-03 16:30:00,-25.4290,-49.2975,6
+Snow,gato,"Gato totalmente branco, porte médio, surdo.",perdido,2025-12-04 07:00:00,-25.4512,-49.2724,4
+Bento,cachorro,"Boxer malhado, porte grande, muito carinhoso.",perdido,2025-12-05 13:30:00,-25.4223,-49.2658,9
+Rambo,gato,"Gato preto e branco, porte grande para a raça, muito gordo.",perdido,2025-12-06 09:00:00,-25.4167,-49.2583,2
+Pipoca,cachorro,"Spitz alemão branco, porte pequeno, muito barulhento.",encontrado,2025-12-07 11:30:00,-25.4456,-49.3034,7
+Caramelo,cachorro,"Vira-lata caramelo, porte médio, rabo enrolado.",perdido,2025-12-08 15:45:00,-25.4345,-49.2892,5
+Mochi,gato,"Gato malhado laranja e branco, porte médio, olhos verdes.",perdido,2025-12-09 08:15:00,-25.4578,-49.2745,1
+Trovão,cachorro,"Dálmata, porte grande, manchas irregulares.",perdido,2025-12-10 14:00:00,-25.4234,-49.2671,10
+Pandinha,gato,"Gata preta com manchas brancas em volta dos olhos.",encontrado,2025-12-11 10:00:00,-25.4489,-49.2963,3
+Farofa,cachorro,"Cocker spaniel dourado, porte médio, orelhas grandes.",perdido,2025-12-12 17:15:00,-25.4112,-49.2598,8
+Pretinha,gato,"Gata toda preta, porte pequeno, grávida quando desapareceu.",perdido,2025-12-13 09:30:00,-25.4367,-49.3089,6
+Branco,cachorro,"Maltês branco, porte pequeno, pelos muito longos.",perdido,2025-12-14 12:15:00,-25.4601,-49.2757,4
+Xodó,cachorro,"Vira-lata preto e branco, porte médio, muito dócil.",encontrado,2025-12-15 08:00:00,-25.4278,-49.2819,9
+Bolota,gato,"Gato rajado marrom, porte pequeno, orelha esquerda cortada.",perdido,2025-12-16 16:00:00,-25.4423,-49.2934,2
+Pimenta,cachorro,"Schnauzer cinza, porte médio, barba característica.",perdido,2025-12-17 13:45:00,-25.4145,-49.2561,7
+Docinho,gato,"Gata persa malhada, porte médio, muito preguiçosa.",perdido,2025-12-18 10:30:00,-25.4556,-49.3001,5
+Bingo,cachorro,"Dachshund preto e bege, porte pequeno, coleira listrada.",encontrado,2025-12-19 07:45:00,-25.4312,-49.2687,1
+Chispita,cachorro,"Chihuahua caramelo, porte muito pequeno, tremendo quando encontrado.",encontrado,2025-12-20 15:00:00,-25.4489,-49.2872,10
+Mel,gato,"Gata dourada, porte médio, mancha branca no peito.",perdido,2025-12-21 09:00:00,-25.4189,-49.2640,3
+Garfield,gato,"Gato laranja gordo, porte grande, muito vocal.",perdido,2025-12-22 14:30:00,-25.4634,-49.2715,8
+Whiskers,gato,"Gato rajado cinza, porte médio, bigodes longos e brancos.",encontrado,2025-12-23 11:15:00,-25.4256,-49.2958,6
+Pitoco,cachorro,"Pug fawn, porte pequeno, rabo enrolado e cara amassada.",perdido,2025-12-24 08:30:00,-25.4523,-49.2793,4
+Belinha,cachorro,"Yorkshire caramelo e preto, porte pequeno, laço no topete.",perdido,2025-12-25 10:00:00,-25.4401,-49.3056,9
