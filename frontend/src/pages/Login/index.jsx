@@ -6,8 +6,8 @@ import './styles.css';
 
 export default function Login() {
   const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [erro, setErro] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [carregando, setCarregando] = useState(false);
 
   const { login } = useAuth();
@@ -15,14 +15,14 @@ export default function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setErro('');
+    setError('');
     setCarregando(true);
 
     try {
-      await login(email, senha);
+      await login(email, password);
       navigate('/feed');
     } catch (err) {
-      setErro(err.message);
+      setError(err.message);
     } finally {
       setCarregando(false);
     }
@@ -53,15 +53,15 @@ export default function Login() {
             <input
               id="senha"
               type="password"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
               autoComplete="current-password"
             />
           </div>
 
-          {erro && <p className="login-erro">{erro}</p>}
+          {error && <p className="login-erro">{error}</p>}
 
           <button type="submit" className="login-btn" disabled={carregando}>
             {carregando ? 'Entrando...' : 'Entrar'}

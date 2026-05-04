@@ -9,7 +9,7 @@ export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [contact, setPhone] = useState('');
+  const [contact, setContact] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -36,7 +36,7 @@ export default function Register() {
       const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome: name, email, senha: password, telefone: contact || undefined }),
+        body: JSON.stringify({name, email, password, contact})
       });
 
       const data = await response.json();
@@ -107,7 +107,7 @@ export default function Register() {
               id="contact"
               type="tel"
               value={contact}
-              onChange={(e) => setPhone(format_contact(e.target.value))}
+              onChange={(e) => setContact(format_contact(e.target.value))}
               placeholder="(00) 00000-0000"
               autoComplete="tel"
             />
