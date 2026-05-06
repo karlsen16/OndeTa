@@ -1,71 +1,77 @@
-# OndeTa?
+# OndeTa?  🐾 - Sistema Colaborativo de Localização de Pets
 
-Aplicação colaborativa para localização de animais perdidos com feed interativo e geolocalização.
+O **OndeTa?** é uma plataforma completa projetada para conectar comunidades em prol do resgate e localização de animais perdidos. Através de um feed interativo e geolocalização em tempo real, transformamos a busca por um pet em um esforço coletivo.
 
+---
 
-# Tecnologias
+## Tecnologias e Ferramentas
 
-## Back-end  
-Python (vamos tentar esse primeiro), Node.js ou  Express / Fastify / NestJS
+### **Back-end**
+* **Linguagem:** Python
+* **Banco de Dados:** PostgreSQL
+* **ORM:** SQLAlchemy (Acesso a dados)
+* **Validação e Serialização::** Marshmallow
 
-## Front-end (a definir)
-React, Vue,  Angular ou SvelteKit
+### **Front-end (Web)**
+* **Framework:** React + Vite
+* **Estilização:** CSS Modules
+* **Estado Global:** Context API
 
-## Banco de dados
-PostgreSQL
+---
 
-## Acesso ao banco
-pg (node-postgres) e Prisma ORM
+## Arquitetura do Sistema
 
+O projeto utiliza uma arquitetura **Cliente-Servidor** modular e desacoplada. A comunicação entre o ecossistema de frontends (Web/Mobile) e o servidor ocorre via **API REST**.
 
-# Arquitetura do projeto
-
-Combinação de MVC (Model-View-Controller) com Arquitetura em camadas (Layered architecture)
+<details><summary><strong>Diagrama da Arquitetura</strong></summary>
 
 ```mermaid
-architecture-beta
-    group client(internet)[Client]
-    service user(internet)[Usuario] in client
+flowchart TB
 
-    group fe(cloud)[Frontend]
-    service feapp(server)[WebApp em React ou Vue] in fe
+    subgraph Frontend
+        A[Pages]
+        B[Components]
+        C[Hooks]
+        D[Context]
+        E[Services/API]
+    end
 
-    group api(cloud)[Backend]
-    service server(server)[NodeAPI] in api
+    subgraph Backend
+        F[Routes]
+        G[Controllers]
+        H[Services]
+        I[Repositories]
 
-    group frameworks(server)[Frameworks]
-    service auth(server)[Autenticacao PassportJs] in frameworks
-    service feed(server)[Feed] in frameworks
-    service geo(server)[Geolocalizacao] in frameworks
+        J[Models ORM]
+        K[Schemas]
+    end
 
-    service db(database)[PostgreSQL] in api
-    service cdn(disk)[Firebase CDN] in api
+    L[(Banco de Dados)]
 
-    user:R -[Acesso via web]- L:feapp
-    feapp:R -[REST]- L:server
+    A --> B --> C --> D --> E
 
-    server:R -[conexao SQL]- L:db
-    server:L -[Enviar imagens]- L:cdn
+    E -->|HTTP Requests| F
+    F --> G --> H --> I --> L
 
-    server:B -- T:auth
-    server:B -- T:feed
-    feapp:B -- T:geo
-
+    G -.-> K
+    I -.-> J
 ```
+</details>
+---
 
-#  Estrutura do projeto
+##  Estrutura do Projeto
 
-## Root
+### Root
 
 ```bash
-ondeTa-app/
-├── frontend/
-├── backend/
-├── docs/
+OndeTa/
+├── frontend/     # Aplicação Web (React)
+├── backend/      # API REST (Python)
+├── docs/         # Diagramas e documentação técnica
 └── README.md
 ```
 
-## Front-end
+<details><summary><strong>Front-end (Web)</strong></summary>
 
 ```bash
 frontend/
@@ -112,15 +118,9 @@ frontend/
 ├── package.json
 └── vite.config.js (ou webpack)
 ```
+</details>
 
-### Organização lógica
-- pages → telas completas
-- components → peças reutilizáveis
-- hooks → lógica separada (muito importante!)
-- services → API (axios/fetch)
-- context → estado global (auth)
-
-## Back-end
+<details><summary><strong>Back-end</strong></summary>
 
 ```bash
 backend/
@@ -152,7 +152,7 @@ backend/
 │   │   ├── pet.py
 │   │   └── image.py
 │   │
-│   ├── schemas/             # validação (marshmallow/pydantic)
+│   ├── schemas/             # validação (marshmallow)
 │   │   ├── user_schema.py
 │   │   └── pet_schema.py
 │   │
@@ -169,280 +169,63 @@ backend/
 ├── requirements.txt
 └── .env
 ```
-
-### Como isso se conecta (fluxo real)
-
-Frontend → routes → controllers → services → repositories → DB
-
-### Exemplo real (criar pet)
-
-```bash
-pet_routes.py        → define endpoint
-pet_controller.py    → valida request
-pet_service.py       → regra de negócio
-pet_repository.py    → salva no banco
-```
-
-## Pasta de documentação
-
-```bash
-docs/
-├── architecture.puml
-├── front_components.puml
-├── back_components.puml
-├── ER.puml
-└── sequence_diagram.puml
-```
-
-# Convenções de código
-
-## Idioma
-```text
-* Código, nome de arquivos e pastas: inglês
-* Documentação: português
-```
-   
-## Variáveis
-```text
-camelCase
-```
-
-## Classes
-```text
-PascalCase
-```
-
-## Funções
-```text 
-snake_case
-
-* Verbos no infinitivo
-* Podemos expandir o exemplo para adicionar template de comentários
-```
-
-## Diretórios
-```text
-lowercase
-```
-
-## Arquivos
-```text
-snake_case
-```
-
-## Componentes do Frontend
-```text
-PascalCase
-```
-
-## Banco de dados
-```text
-snake_case
-```
-
-## Padrão de API REST
-```text
-Regras: 
-
-* Usar substantivos (não verbos)
-* Plural
-* Status HTTP correto
-
-GET    /pets
-GET    /pets/:id
-POST   /pets
-PUT    /pets/:id
-DELETE /pets/:id
-```
-
-## Padrão de commits
-```text
-feat: adicionando endpoint de cadastro de pets
-fix: corrigindo validação de login
-docs: atualizando README
-refactor: melhorando estrutura da camada service
-style: ajustando o componente name
-```
-
-## Padrão de pull request e merge
-```text
-Usar a opção "Squash and merge"
-```
-</br>
-
-# 🚨 Regras gerais do projeto 
-
-### 1. Seguir padrão REST nas APIs
-
-### 2. Não misturar responsabilidades entre camadas
-
-### 3. Não criar pastas genéricas (ex: "outros", "coisas")
-
-### 4. Cada arquivo deve ter uma única responsabilidade
-
-### 5. Manter no máximo de ~50 linhas por função
-
-### 6. Evitar funções com múltiplas responsabilidades
-
-### 7. Reutilizar código sempre que possível
-
-### 8. Nunca colocar senha direto no código
-
-### 9. Usar variáveis de ambiente (`.env`)
-```python
-import os
-
-password = os.getenv("DB_PASSWORD")
-```
-
-### 10. Conexão com Banco
-* Centralizar conexão em um único arquivo
-* Nunca repetir código de conexão
-```python
-def get_connection():
-    return psycopg2.connect(...)
-```
-
-### 11. Validar dados antes de salvar no Banco
-```python
-if animal not in ["gato", "cachorro"]:
-    raise ValueError("Animal inválido")
-```
-
-### 12. Seguir CRUD padrão
-* Cada entidade deve ter: `criar()`, `listar()`,  `atualizar()` e `deletar()`
-
-### 13. Sempre tratar exceções
-```python
-try:
-    inserir(...)
-except Exception as e:
-    print("Erro:", e)
-```
-
-### 14. Gerenciar dependências com `requirements.txt`
-```bash
-pip freeze > requirements.txt
-```
- 
-
-# Como executar
-## Backend
-```bash
-cd backend
-npm install
-npm run dev
-```
-## Frontend
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-# Como instalar, configurar e utilizar o PostgreSQL 
-## 1. Instalação
-### Linux (Ubuntu/Debian)
-```bash
-sudo apt update
-sudo apt install postgresql postgresql-contrib
-```
-### Windows
-```text
-Baixe pelo site oficial:
-https://www.postgresql.org/download/
-```
-
-## 2. Iniciar o serviço
-```bash
-sudo systemctl start postgresql
-```
-
-## 3. Acessar o PostgreSQL
-```bash
-sudo -u postgres psql
-```
-
-## 4. Criar banco de dados
-```sql
-CREATE DATABASE ondeta_db;
-```
-
-## 5. Criar usuário
-```sql
-CREATE USER adminondeta WITH PASSWORD 'admin';
-```
-
-## 6. Conectar ao banco
-```sql
-\c ondeta_db
-```
-
-## 7. Criar tabela
-```sql
-CREATE TABLE animais_perdidos (
-    id SERIAL PRIMARY KEY,
-    login VARCHAR(50) NOT NULL,
-    animal VARCHAR(10) NOT NULL,
-    local VARCHAR(100) NOT NULL
-);
-```
-
-## 8. Configurar permissões
-Dar acesso completo ao usuário:
-```sql
-GRANT ALL PRIVILEGES ON DATABASE ondeta_db TO adminondeta;
-GRANT ALL ON SCHEMA public TO adminondeta;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO adminondeta;
-```
-
-Garantir permissões futuras:
-```sql
-ALTER DEFAULT PRIVILEGES IN SCHEMA public
-GRANT ALL ON TABLES TO adminondeta;
-```
-
-Garantir acesso às sequências (IMPORTANTE para INSERT):
-```sql
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO adminondeta;
-```
-
-## 9. Tornar o usuário dono da tabela (opcional)
-```sql
-ALTER TABLE animais_perdidos OWNER TO adminondeta;
-```
-
-## 10. Testar o banco
-```sql
-INSERT INTO animais_perdidos (login, animal, local)
-VALUES ('teste', 'gato', 'Maringá');
-
-SELECT * FROM animais_perdidos;
-```
-
-## 11. Conexão no Python
-Certifique-se de instalar a dependência:
-```bash
-pip install psycopg2-binary
-```
-Exemplo de conexão:
-```python
-import psycopg2
-
-conn = psycopg2.connect(
-    host="localhost",
-    database="ondeta_db",
-    user="adminondeta",
-    password="admin",
-)
-```
-
-**Banco padrão do projeto**
-
-* Database: `ondeta_db`
-* Usuário: `adminondeta`
-* Senha: `admin`
 </details>
 
-**Versão:** 1.3
-**Atualizado em:** 12/4/2026
+---
+
+## Convenções e Boas Práticas
+
+### **Idiomas e Nomenclaturas**
+* **Código (variáveis, arquivos, pastas):** Inglês
+* **Documentação e Comentários:** Português
+* **Estilos:** `PascalCase` (Componentes), `snake_case` (funções/DB)
+
+### **Padrão de Commits**
+* `feat:` Nova funcionalidade ou recurso.
+* `fix:` Correção de algum erro ou bug.
+* `docs:` Alterações em documentações (como este README).
+* `refactor:` Melhorias no código que não alteram a funcionalidade final.
+* `style:` Mudanças visual/estética (CSS) ou formatação de código.
+
+---
+
+## Regras Gerais do Projeto 
+
+1. **Padrão REST:** Utilizar substantivos no plural e os métodos HTTP corretos (`GET`, `POST`, `PUT`, `DELETE`).
+2. **Responsabilidade Única (SRP):** Cada arquivo, classe ou função deve ser responsável por apenas uma funcionalidade.
+3. **Segurança:** O arquivo `.env` contém credenciais sensíveis e **nunca** deve ser enviado ao repositório (verifique o `.gitignore`).
+4. **Tratamento de Erros:** 
+   * No **Backend**: Utilizar blocos `try/except` para capturar exceções e retornar status codes apropriados.
+   * No **Frontend**: Validar os retornos da API e exibir mensagens amigáveis ao usuário.
+
+---
+
+## Como Executar
+
+### **Backend**
+```bash
+# Entre na pasta do backend
+cd backend
+
+# Instale as dependências
+pip install -r requirements.txt
+
+# Execute a aplicação
+python run.py
+```
+### **Frontend**
+```bash
+# Entre na pasta do frontend
+cd frontend
+
+# Instale as dependências (necessário apenas na primeira vez)
+npm install
+
+# Inicie o servidor de desenvolvimento
+npm run dev
+```
+
+---
+
+**Versão:** 2.0
+**Última atualização:** 6/5/2026
