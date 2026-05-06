@@ -2,7 +2,7 @@
 
 O **OndeTa?** é uma plataforma completa projetada para conectar comunidades em prol do resgate e localização de animais perdidos. Através de um feed interativo e geolocalização em tempo real, transformamos a busca por um pet em um esforço coletivo.
 
----
+<br />
 
 ## Tecnologias e Ferramentas
 
@@ -17,7 +17,7 @@ O **OndeTa?** é uma plataforma completa projetada para conectar comunidades em 
 * **Estilização:** CSS Modules
 * **Estado Global:** Context API
 
----
+<br />
 
 ## Arquitetura do Sistema
 
@@ -57,7 +57,7 @@ flowchart TB
     I -.-> J
 ```
 </details>
----
+<br />
 
 ##  Estrutura do Projeto
 
@@ -170,8 +170,7 @@ backend/
 └── .env
 ```
 </details>
-
----
+<br />
 
 ## Convenções e Boas Práticas
 
@@ -187,7 +186,7 @@ backend/
 * `refactor:` Melhorias no código que não alteram a funcionalidade final.
 * `style:` Mudanças visual/estética (CSS) ou formatação de código.
 
----
+<br />
 
 ## Regras Gerais do Projeto 
 
@@ -198,7 +197,7 @@ backend/
    * No **Backend**: Utilizar blocos `try/except` para capturar exceções e retornar status codes apropriados.
    * No **Frontend**: Validar os retornos da API e exibir mensagens amigáveis ao usuário.
 
----
+<br />
 
 ## Como Executar
 
@@ -225,7 +224,7 @@ npm install
 npm run dev
 ```
 
----
+<br />
 
 **Versão:** 2.0
 **Última atualização:** 6/5/2026
