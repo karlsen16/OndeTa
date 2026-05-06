@@ -226,5 +226,13 @@ npm run dev
 
 <br />
 
-**Versão:** 2.0
-**Última atualização:** 6/5/2026
+---
+
+<div align="center">
+  <p><strong>Desenvolvido por:</strong></p>
+  <p>
+    <strong>Ariane Chiminazzo</strong> — <a href="mailto:arianecrmnc@gmail.com">arianecrmnc@gmail.com</a><br />
+    <strong>Lucas Schuchardt</strong> — <a href="mailto:l.rdt@pm.me">l.rdt@pm.me</a><br />
+  </p>
+  <p><strong>Versão:</strong> 2.0 | <strong>Última atualização:</strong> 06/05/2026</p>
+</div>
