@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import logo from '../../assets/Logo-ondeta-v1.png';
 import './styles.css';
@@ -8,23 +8,26 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [carregando, setCarregando] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const { login } = useAuth();
+  const { login: authLogin } = useAuth();
   const navigate = useNavigate();
 
+  const location = useLocation();
+  const registered = location.state?.registered ?? false;
+  
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
-    setCarregando(true);
+    setLoading(true);
 
     try {
-      await login(email, password);
+      await authLogin(email, password);
       navigate('/feed');
     } catch (err) {
       setError(err.message);
     } finally {
-      setCarregando(false);
+      setLoading(false);
     }
   }
 
@@ -33,6 +36,10 @@ export default function Login() {
       <div className="login-card">
         <img src={logo} alt="OndeTá?" className="login-logo" />
         <p className="login-subtitle">Encontre seu pet perdido</p>
+
+        {registered && (
+          <p className="login-success">Usuário cadastrado com sucesso!</p>
+        )}
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="login-field">
@@ -49,9 +56,9 @@ export default function Login() {
           </div>
 
           <div className="login-field">
-            <label htmlFor="senha">Senha</label>
+            <label htmlFor="password">Senha</label>
             <input
-              id="senha"
+              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -61,14 +68,14 @@ export default function Login() {
             />
           </div>
 
-          {error && <p className="login-erro">{error}</p>}
+          {error && <p className="login-error">{error}</p>}
 
-          <button type="submit" className="login-btn" disabled={carregando}>
-            {carregando ? 'Entrando...' : 'Entrar'}
+          <button type="submit" className="login-btn" disabled={loading}>
+            {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
 
-        <p className="login-cadastro">
+        <p className="login-register">
           Não tem conta?{' '}
           <Link to="/cadastro">Cadastre-se</Link>
         </p>
