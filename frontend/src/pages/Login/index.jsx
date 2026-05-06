@@ -77,7 +77,7 @@ export default function Login() {
 
         <p className="login-register">
           Não tem conta?{' '}
-          <Link to="/cadastro">Cadastre-se</Link>
+          <Link to="/register">Cadastre-se</Link>
         </p>
       </div>
     </div>
