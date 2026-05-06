@@ -28,7 +28,7 @@
   font-family: 'Baloo 2', sans-serif;
   font-weight: 700;
   font-size: 0.95rem;
-  color: #7B6BAB;
+  color: #7b6bab;
   margin: 0 0 2rem;
 }
 
@@ -73,7 +73,19 @@
   background-color: #ffffff;
 }
 
-.login-erro {
+.login-success {
+  font-size: 0.875rem;
+  color: #2e7d32;
+  background-color: #e8f5e9;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  margin: 0 0 0.5rem;
+  width: 100%;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.login-error {
   font-size: 0.875rem;
   color: #c0392b;
   background-color: #fdecea;
@@ -84,7 +96,7 @@
 
 .login-btn {
   padding: 0.75rem;
-  background-color: #4A3B6B;
+  background-color: #4a3b6b;
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -95,7 +107,7 @@
 }
 
 .login-btn:hover:not(:disabled) {
-  background-color: #362B52;
+  background-color: #362b52;
 }
 
 .login-btn:disabled {
@@ -103,19 +115,19 @@
   cursor: not-allowed;
 }
 
-.login-cadastro {
+.login-register {
   text-align: center;
   font-size: 0.875rem;
   color: #5b4a8a;
   margin: 1.5rem 0 0;
 }
 
-.login-cadastro a {
+.login-register a {
   color: #79c23a;
   font-weight: 600;
   text-decoration: none;
 }
 
-.login-cadastro a:hover {
+.login-register a:hover {
   text-decoration: underline;
 }
