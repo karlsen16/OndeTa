@@ -125,41 +125,21 @@ frontend/
 ```bash
 backend/
 ├── app/
-│   ├── __init__.py
-│   │
 │   ├── routes/              # endpoints
-│   │   ├── auth_routes.py
-│   │   ├── pet_routes.py
-│   │   └── user_routes.py
-│   │
+│   │   └── ...
 │   ├── controllers/         # interface HTTP
-│   │   ├── auth_controller.py
-│   │   ├── pet_controller.py
-│   │   └── user_controller.py
-│   │
+│   │   └── ...
 │   ├── services/            # regras de negócio
-│   │   ├── auth_service.py
-│   │   ├── pet_service.py
-│   │   └── image_service.py
-│   │
+│   │   └── ...
 │   ├── repositories/        # acesso ao banco
-│   │   ├── user_repository.py
-│   │   ├── pet_repository.py
-│   │   └── image_repository.py
-│   │
+│   │   └── ...
 │   ├── models/              # ORM (SQLAlchemy)
-│   │   ├── user.py
-│   │   ├── pet.py
-│   │   └── image.py
-│   │
+│   │   └── ...
 │   ├── schemas/             # validação (marshmallow)
-│   │   ├── user_schema.py
-│   │   └── pet_schema.py
-│   │
-│   ├── utils/
-│   │   ├── security.py      # hash, JWT
-│   │   └── helpers.py
-│   │
+│   │   └── ...
+│   ├── utils/               # compressão de imagens
+│   │   └── ...              # acesso a storage
+│   ├── __init__.py
 │   ├── config.py
 │   └── extensions.py        # db, jwt, etc
 │

@@ -13,7 +13,7 @@ class ImageRepository:
 
     @staticmethod
     def get_by_id(image_id):
-        return Image.query.get(image_id)
+        return db.session.get(Image, image_id)
 
     @staticmethod
     def get_by_pet_id(pet_id):
