@@ -9,7 +9,7 @@ def create_app():
     app.config.from_object(Config)
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
 
-    CORS(app, origins=['http://localhost:5173'])
+    CORS(app, resources={r"/*": {"origins": ["https://karlsen16.github.io", "http://localhost:5173"]}})
 
     db.init_app(app)
     bcrypt.init_app(app)
