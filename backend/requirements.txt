@@ -9,3 +9,4 @@ python-dotenv==1.2.2
 Requests==2.33.1
 alembic==1.18.4
 psycopg2-binary
+supabase
