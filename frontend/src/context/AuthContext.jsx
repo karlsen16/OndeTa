@@ -1,35 +1,43 @@
-import { createContext, useState } from 'react';
-
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:5000';
+import { createContext, useState, useEffect } from 'react';
+import api from '../services/api';
 
 export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem('@App:user');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+    setLoading(false);
+  }, []);
 
   async function login(email, password) {
-    const response = await fetch(`${API_URL}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
 
-    const data = await response.json();
+      const response = await api.post('/auth/login', { email, password });
+      const data = response.data;
 
-    if (!response.ok) {
-      throw new Error(data.error ?? 'Erro ao fazer login');
+      setUser(data);
+      localStorage.setItem('@App:user', JSON.stringify(data));
+
+      return data;
+    } catch (error) {
+      const message = error.response?.data?.error ?? 'Erro ao fazer login';
+      throw new Error(message);
     }
-
-    setUser(data);
-    return data;
   }
 
   function logout() {
     setUser(null);
+    localStorage.removeItem('@App:user');
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
