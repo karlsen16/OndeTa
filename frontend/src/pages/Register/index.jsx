@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
+import api from '../../services/api';
 import logo from '../../assets/Logo-ondeta-v1.png';
 import './styles.css';
-
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:5000';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -13,6 +13,7 @@ export default function Register() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const { login: authLogin } = useAuth();
   const navigate = useNavigate();
 
   function format_contact(value) {
@@ -33,21 +34,20 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({name, email, password, contact})
+      await api.post('/auth/register', {
+        name,
+        email,
+        password,
+        contact
       });
 
-      const data = await response.json();
+      await authLogin(email, password);
 
-      if (!response.ok) {
-        throw new Error(data.error ?? 'Erro ao criar conta');
-      }
+      navigate('/feed');
 
-      navigate('/login', { state: { registered: true } });
     } catch (err) {
-      setError(err.message);
+      const errorMessage = err.response?.data?.error || err.message || 'Erro ao processar cadastro';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -69,7 +69,6 @@ export default function Register() {
               onChange={(e) => setName(e.target.value)}
               placeholder="Seu nome completo"
               required
-              autoComplete="name"
             />
           </div>
 
@@ -82,7 +81,6 @@ export default function Register() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="seu@email.com"
               required
-              autoComplete="email"
             />
           </div>
 
@@ -95,7 +93,6 @@ export default function Register() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              autoComplete="new-password"
             />
           </div>
 
@@ -109,14 +106,13 @@ export default function Register() {
               value={contact}
               onChange={(e) => setContact(format_contact(e.target.value))}
               placeholder="(00) 00000-0000"
-              autoComplete="tel"
             />
           </div>
 
           {error && <p className="register-error">{error}</p>}
 
           <button type="submit" className="register-btn" disabled={loading}>
-            {loading ? 'Criando conta...' : 'Criar conta'}
+            {loading ? 'Processando...' : 'Criar conta'}
           </button>
         </form>
 
