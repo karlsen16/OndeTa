@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import api from '../../services/api';
 import logo from '../../assets/Logo-ondeta-v1.png';
 import './styles.css';
-
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:5000';
 
 const STATUS_LABEL = {
   lost: 'Perdido',
@@ -73,18 +72,11 @@ export default function Feed() {
   async function fetch_pets() {
     setLoading(true);
     setError('');
-
     try {
-      const response = await fetch(`${API_URL}/pets`);
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error ?? 'Erro ao carregar pets');
-      }
-
-      setPets(data);
+      const response = await api.get('/pets');
+      setPets(response.data);
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.error || 'Erro ao carregar pets');
     } finally {
       setLoading(false);
     }
@@ -93,18 +85,13 @@ export default function Feed() {
   async function fetch_my_pets() {
     setMyPostsLoading(true);
     setMyPostsError('');
-
     try {
-      const response = await fetch(`${API_URL}/pets?user_id=${user.id}`);
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error ?? 'Erro ao carregar suas postagens');
-      }
-
-      setMyPets(data);
+      const response = await api.get('/pets', {
+        params: { user_id: user.id }
+      });
+      setMyPets(response.data);
     } catch (err) {
-      setMyPostsError(err.message);
+      setMyPostsError(err.response?.data?.error || 'Erro ao carregar suas postagens');
     } finally {
       setMyPostsLoading(false);
     }
@@ -112,21 +99,14 @@ export default function Feed() {
 
   async function handle_delete(petId) {
     try {
-      const response = await fetch(`${API_URL}/pets/${petId}`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: user.id }),
+      await api.delete(`/pets/${petId}`, {
+        data: { user_id: user.id }
       });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error ?? 'Erro ao excluir postagem');
-      }
 
       setMyPets((prev) => prev.filter((p) => p.id !== petId));
       setPets((prev) => prev.filter((p) => p.id !== petId));
     } catch (err) {
-      setMyPostsError(err.message);
+      setMyPostsError(err.response?.data?.error || 'Erro ao excluir postagem');
     }
   }
 

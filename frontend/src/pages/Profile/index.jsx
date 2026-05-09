@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import api from '../../services/api';
 import logo from '../../assets/Logo-ondeta-v1.png';
 import './styles.css';
-
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:5000';
 
 export default function Profile() {
   const { user, logout } = useAuth();
@@ -36,16 +35,11 @@ export default function Profile() {
 
   async function fetch_profile() {
     try {
-      const response = await fetch(`${API_URL}/users/${user.id}`);
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error ?? 'Erro ao carregar perfil');
-      }
-
-      setProfile(data);
+      // Simplificado com api.get
+      const response = await api.get(`/users/${user.id}`);
+      setProfile(response.data);
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.error || 'Erro ao carregar perfil');
     } finally {
       setLoading(false);
     }
@@ -69,23 +63,17 @@ export default function Profile() {
     setPasswordLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/users/${user.id}/password`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
+      await api.put(`/users/${user.id}/password`, {
+        current_password: currentPassword,
+        new_password: newPassword
       });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error ?? 'Erro ao redefinir senha');
-      }
 
       setPasswordSuccess('Senha atualizada com sucesso!');
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
     } catch (err) {
-      setPasswordError(err.message);
+      setPasswordError(err.response?.data?.error || 'Erro ao redefinir senha');
     } finally {
       setPasswordLoading(false);
     }
@@ -96,19 +84,12 @@ export default function Profile() {
     setDeleteError('');
 
     try {
-      const response = await fetch(`${API_URL}/users/${user.id}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error ?? 'Erro ao excluir conta');
-      }
+      await api.delete(`/users/${user.id}`);
 
       logout();
       navigate('/register');
     } catch (err) {
-      setDeleteError(err.message);
+      setDeleteError(err.response?.data?.error || 'Erro ao excluir conta');
       setDeleteLoading(false);
     }
   }
@@ -196,7 +177,6 @@ export default function Profile() {
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  autoComplete="current-password"
                 />
               </div>
 
@@ -209,7 +189,6 @@ export default function Profile() {
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  autoComplete="new-password"
                 />
               </div>
 
@@ -222,7 +201,6 @@ export default function Profile() {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  autoComplete="new-password"
                 />
               </div>
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import logo from '../../assets/Logo-ondeta-v1.png';
 import './styles.css';
@@ -13,9 +13,6 @@ export default function Login() {
   const { login: authLogin } = useAuth();
   const navigate = useNavigate();
 
-  const location = useLocation();
-  const registered = location.state?.registered ?? false;
-  
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
@@ -25,7 +22,8 @@ export default function Login() {
       await authLogin(email, password);
       navigate('/feed');
     } catch (err) {
-      setError(err.message);
+      const errorMessage = err.response?.data?.error || err.message || 'Erro ao realizar login';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -36,10 +34,6 @@ export default function Login() {
       <div className="login-card">
         <img src={logo} alt="OndeTá?" className="login-logo" />
         <p className="login-subtitle">Encontre seu pet perdido</p>
-
-        {registered && (
-          <p className="login-success">Usuário cadastrado com sucesso!</p>
-        )}
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="login-field">

@@ -25,7 +25,7 @@ jobs:
         run: cd frontend && npm install
 
       - name: Build
-        run: cd frontend && npm run build
+        run: cd frontend && echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > .env.production && npm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
