@@ -1,0 +1,46 @@
+@startuml
+skinparam style strictuml
+skinparam sequenceMessageAlign center
+
+actor "Usuário" as User
+participant "Frontend (React)" as FE
+participant "API Flask" as API
+participant "Auth Service" as Auth
+database "PostgreSQL" as DB
+participant "Supabase Storage" as Cloud
+
+User -> FE : Clica em "Remover Foto"
+FE -> API : DELETE /me/images/{img_id}
+activate API
+
+API -> Auth : Valida Token JWT
+activate Auth
+Auth --> API : User ID (do token)
+deactivate Auth
+
+API -> DB : Busca Imagem + Post Relacionado
+activate DB
+DB --> API : Dados da Imagem (Owner ID, URL)
+deactivate DB
+
+alt Usuário é dono da imagem?
+    API -> API : Compara Owner ID == User ID
+
+    API -> Cloud : Solicita exclusão do arquivo (URL)
+    activate Cloud
+    Cloud --> API : Confirmação (204 No Content)
+    deactivate Cloud
+
+    API -> DB : DELETE FROM images WHERE id={img_id}
+    activate DB
+    DB --> API : Sucesso
+    deactivate DB
+
+    API --> FE : HTTP 204 (Sucesso)
+else Não é o dono
+    API --> FE : HTTP 403 (Forbidden)
+end
+
+deactivate API
+FE -> User : Atualiza galeria na tela
+@enduml

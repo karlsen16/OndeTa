@@ -1,0 +1,54 @@
+/'
+- Atributos Not Null: o asterisco (*) para indicar campos nullable=False,
+    o que ajuda a identificar restrições de banco de dados.
+- Mencionar os campos user_id e post_id como Chaves Estrangeiras (FK)
+    que mantêm o relacionamento entre as entidades.
+- Geolocalização: as colunas latitude e longitude são essenciais para
+    o algoritmo de Feed Híbrido e visualização no Mapa, que são os
+    diferenciais do projeto.
+'/
+@startuml
+hide circle
+skinparam linetype ortho
+skinparam roundcorner 5
+skinparam shadowing false
+
+entity "Users" as user {
+  * **id** : Integer [PK]
+  --
+  * name : String(100)
+  * email : String(120) [UQ]
+  * password : String(255)
+  contact : String(20)
+  role : String(20) [default: 'user']
+  status : String(20) [default: 'active']
+}
+
+entity "Posts" as post {
+  * **id** : Integer [PK]
+  --
+  * **user_id** : Integer [FK]
+  pet_name : String(100)
+  pet_type : String(50)
+  category : String(20)
+  description : Text
+  status : String(20) [default: 'active']
+  created_at : DateTime
+  updated_at : DateTime
+  date : DateTime
+  * latitude : Float
+  * longitude : Float
+}
+
+entity "Images" as image {
+  * **id** : Integer [PK]
+  --
+  * **post_id** : Integer [FK]
+  * url : String(255)
+  * filename : String(255)
+}
+
+user ||--o{ post : "possui (author)"
+post ||--o{ image : "contém (cascade delete)"
+
+@enduml
