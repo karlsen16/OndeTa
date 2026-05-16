@@ -26,36 +26,25 @@ O projeto utiliza uma arquitetura **Cliente-Servidor** modular e desacoplada. A 
 <details><summary><strong>Diagrama da Arquitetura</strong></summary>
 
 ```mermaid
-flowchart TB
+architecture-beta
+    group client(cloud)["Camada de Cliente (GitHub Pages)"]
+    group server(server)["Camada de Servidor (Render)"]
+    group infra(database)["Infraestrutura (Supabase)"]
 
-    subgraph Frontend
-        A[Pages]
-        B[Components]
-        C[Hooks]
-        D[Context]
-        E[Services/API]
-    end
+    service fe(internet)[Frontend React] in client
+    service map(internet)[API Mapas] in client
 
-    subgraph Backend
-        F[Routes]
-        G[Controllers]
-        H[Services]
-        I[Repositories]
+    service be(server)[Backend Flask API] in server
 
-        J[Models ORM]
-        K[Schemas]
-    end
+    service db(database)[PostgreSQL] in infra
+    service img(disk)[Storage Buckets] in infra
 
-    L[(Banco de Dados)]
-
-    A --> B --> C --> D --> E
-
-    E -->|HTTP Requests| F
-    F --> G --> H --> I --> L
-
-    G -.-> K
-    I -.-> J
+    fe:R -- L:map
+    fe:B -- T:be
+    be:R -- L:db
+    be:B -- T:img
 ```
+A solução adota uma infraestrutura totalmente baseada em nuvem e distribuída, utilizando GitHub Pages para a entrega do artefato de front-end, Render como plataforma de execução para a API em Python/Flask, e o ecossistema Supabase para a persistência poliglota (dados relacionais no PostgreSQL e objetos binários nos Buckets).
 </details>
 <br />
 

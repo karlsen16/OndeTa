@@ -1,0 +1,56 @@
+/'
+- Agrupamento por Contexto: Routes e Controllers em "Camada de Interface"
+pois são do mesmo nível lógico.
+- Estilo das Setas:
+    ..> (setas pontilhadas) para Dependência
+        (quando uma classe usa outra apenas como ferramenta, como o Schema)
+    e --> para Fluxo de Dados.
+- Baixo Acoplamento: A Route não sabe que o Repository existe.
+    Isso facilita a troca de tecnologias (ex: mudar de SQL para NoSQL
+    sem tocar nas rotas).
+- Encapsulamento de Regras de Negócio: O Service é o único lugar onde as
+    regras de negócio (como o cálculo do feed híbrido) residem.
+- Segurança: O uso de Schemas garante que dados maliciosos sejam barrados
+    logo na entrada (Controller).
+'/
+@startuml
+skinparam componentStyle uml2
+skinparam packageStyle rectangle
+
+package "Sistema Back-end (Flask App)" {
+
+    package "Camada de Interface" {
+        [Routes]
+        [Controllers]
+    }
+
+    package "Camada de Negócio" {
+        [Services]
+    }
+
+    package "Camada de Dados" {
+        [Repositories]
+        [Models]
+    }
+
+    package "Suporte" {
+        [Schemas]
+        [Utils]
+    }
+
+    ' Fluxo Principal
+    [Routes] --> [Controllers] : encaminha
+    [Controllers] --> [Services] : orquestra
+    [Services] --> [Repositories] : consulta
+
+    ' Interações Internas e Suporte
+    [Controllers] ..> [Schemas] : valida/serializa
+    [Services] -> [Services] : integra
+    [Services] ..> [Utils] : auxilia
+    [Repositories] -> [Models] : mapeia
+}
+
+database "PostgreSQL / Supabase" as DB
+[Repositories] --> DB : persiste
+
+@enduml
