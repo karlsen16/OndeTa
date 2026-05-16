@@ -1,65 +1,46 @@
 @startuml
-autonumber
 skinparam style strictuml
+skinparam sequenceMessageAlign center
 
 actor "Usuário" as User
-participant "Frontend" as UI
+participant "Frontend (React)" as FE
+participant "API Flask" as API
+participant "Auth Service" as Auth
+database "PostgreSQL" as DB
+participant "Supabase Storage" as Cloud
 
-box "Backend" #f9f9f9
-    participant "Camada de Interface" as CI
-    participant "Camada de Negócio" as CN
-    participant "Camada de Dados" as CD
-end box
+User -> FE : Clica em "Remover Foto"
+FE -> API : DELETE /me/images/{img_id}
+activate API
 
-box "Infra" #e8f4f8
-    participant "Storage" as Cloud
-    participant "PostgreSQL (DB)" as DB
-end box
+API -> Auth : Valida Token JWT
+activate Auth
+Auth --> API : User ID (do token)
+deactivate Auth
 
-== Fluxo: Remover uma Foto ==
-
-User -> UI : Clica em "Remover Foto"
-activate UI
-UI -> CI : DELETE /me/images/{img_id}
-activate CI
-CI -> CI : Identifica o usuário (user_id)
-CI -> CN : Deleta imagem (user_id, img_id)
-activate CN
-CN -> CD : Verifica quem é dono do post com a img_id
-activate CD
-CD -> DB : SELECT user_id FROM posts JOIN images WHERE img_id
+API -> DB : Busca Imagem + Post Relacionado
 activate DB
-DB --> CD : user_id
+DB --> API : Dados da Imagem (Owner ID, URL)
 deactivate DB
-CD --> CN : post.user_id
-deactivate CD
-CN -> CN : Valida Posse (user_id == post.user_id)
 
-alt Não é o dono
-    CN --> CI : Erro autenticação
-    CI --> UI : 403 Forbidden
-    UI --> User : "Não tem autorização para deletar essa imagem."
-else Usuário é dono da imagem
-    CN -> Cloud : Solicita exclusão no storage
+alt Usuário é dono da imagem?
+    API -> API : Compara Owner ID == User ID
+
+    API -> Cloud : Solicita exclusão do arquivo (URL)
     activate Cloud
-    Cloud --> CN : Sucesso
+    Cloud --> API : Confirmação (204 No Content)
     deactivate Cloud
-    CN -> CD : Solicita exclusão no DB
-    activate CD
-    CD -> DB : DELETE FROM images WHERE id={img_id}
+
+    API -> DB : DELETE FROM images WHERE id={img_id}
     activate DB
-    DB --> CD : Sucesso
+    DB --> API : Sucesso
     deactivate DB
-    CD --> CN : Sucesso
-    deactivate CD
-    CN --> CI:  Sucesso
-    deactivate CN
-    CI --> UI : 204 Sucesso
-    deactivate CI
-    UI -> User : Atualiza galeria na tela
-    deactivate UI
+
+    API --> FE : HTTP 204 (Sucesso)
+else Não é o dono
+    API --> FE : HTTP 403 (Forbidden)
 end
 
-
-
+deactivate API
+FE -> User : Atualiza galeria na tela
 @enduml
