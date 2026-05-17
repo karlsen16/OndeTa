@@ -1,67 +1,104 @@
 @startuml
+autonumber
 skinparam style strictuml
-skinparam sequenceMessageAlign center
+skinparam MaxMessageSize 200
 
 actor "Usuário" as User
-participant "Frontend (React)" as FE
-participant "API Flask" as API
-participant "Auth Middleware" as Auth
-participant "Post Service" as SVC
-participant "Supabase Storage" as Cloud
-database "PostgreSQL" as DB
+participant "Frontend" as UI
 
-User -> FE : Preenche dados e anexa fotos
-FE -> API : POST /posts (multipart/form-data)
-activate API
+box "Backend" #f9f9f9
+    participant "Camada de Interface" as CI
+    participant "Camada de Negócio" as CN
+    participant "Camada de Dados" as CD
+end box
 
-API -> Auth : Valida JWT Token
-activate Auth
+box "Infra" #e8f4f8
+    participant "Storage" as Cloud
+    participant "PostgreSQL (DB)" as DB
+end box
 
-alt Token Inválido ou Expirado
-    Auth --> API : Erro de Autenticação
-    API --> FE : HTTP 401 (Unauthorized)
-    FE -> User : Redireciona para Login
-else Token Válido
-    Auth --> API : User ID
-    deactivate Auth
+== Início do Fluxo ==
 
-    API -> SVC : create_post(user_id, data, files)
-    activate SVC
+User -> UI : Preenche dados e envia fotos
+activate UI
+UI -> CI : POST /posts (data, files)
+activate CI
+CI -> CI : Identifica o usuário (user_id)
+CI -> CI : Valida Entrada (PostCreateSchema)
 
-    SVC -> DB : INSERT INTO posts (status='pending')
+alt Dados Inválidos
+    CI --> UI : 400 Bad Request
+    UI --> User : Exibe alertas nos campos
+else Dados Ok
+    CI -> CN : Cria post (user_id, data, files)
+    activate CN
+
+    == Persistência Inicial ==
+
+    CN -> CD : Novo registro (user_id, data, status='pending')
+    activate CD
+    CD -> DB : INSERT INTO posts
     activate DB
-    DB --> SVC : post_id
+    DB --> CD : post_id
     deactivate DB
+    CD --> CN : post_id
+    deactivate CD
 
-    loop para cada imagem
-        SVC -> Cloud : Upload binário
+    == Processamento de Imagens ==
+
+    CN -> CN : has_images = False
+
+    loop para cada imagem em files
+        CN -> Cloud : Upload de imagem
         activate Cloud
-
-        alt Falha no Upload (Supabase fora ou erro de rede)
-            Cloud --> SVC : Erro de Upload
-            SVC -> DB : DELETE FROM posts WHERE id=post_id
-            SVC --> API : Falha no Upload
-            API --> FE : HTTP 500 (Erro no Storage)
-            FE -> User : Mensagem: "Erro ao subir imagens. Tente novamente."
-        else Upload Sucesso
-            Cloud --> SVC : URL da imagem
+        alt Falha no Upload
+            Cloud --> CN : Erro (continua loop)
+        else Upload realizado
+            Cloud --> CN : url_img
             deactivate Cloud
-            SVC -> DB : INSERT INTO images (post_id, url)
+            CN -> CD : Registro de imagem (post_id, url_img)
+            activate CD
+            CD -> DB : INSERT INTO images
             activate DB
-            DB --> SVC : Sucesso
-            deactivate DB
+
+            alt Falha no Registro
+                DB --> CD : Erro
+                CD --> CN : Erro
+                CN -> Cloud : Deleta imagem com url_img
+                activate Cloud
+                Cloud --> CN : Sucesso
+                deactivate Cloud
+            else Registro realizado
+                DB --> CD : Sucesso
+                deactivate DB
+                CD --> CN : Sucesso
+                deactivate CD
+                CN -> CN : has_images = True
+            end
         end
     end
 
-    SVC -> DB : UPDATE posts SET status='active'
-    activate DB
-    DB --> SVC : Sucesso
-    deactivate DB
+    == Finalização de Fluxo ==
 
-    SVC --> API : Post Criado
-    deactivate SVC
-    API --> FE : HTTP 201 Created
-    deactivate API
-    FE -> User : Sucesso!
+    alt has_images == False
+        CN --> CI : Post status: "pending"
+        CI --> UI : 201 Created
+        UI --> User : "Dados salvos, mas houve erro nas fotos.\nComplete no seu Perfil."
+    else has_images == True
+        CN -> CD : Atualiza status (post_id, 'active')
+        activate CD
+        CD -> DB : UPDATE posts SET status='active'
+        activate DB
+        DB --> CD : Sucesso
+        deactivate DB
+        CD --> CN : Sucesso
+        deactivate CD
+        CN --> CI : Post status: "active"
+        deactivate CN
+        CI --> UI : 201 Created
+        deactivate CI
+        UI --> User : "Post publicado com sucesso!"
+        deactivate UI
+    end
 end
 @enduml

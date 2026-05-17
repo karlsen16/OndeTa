@@ -1,0 +1,61 @@
+@startuml
+autonumber
+skinparam style strictuml
+
+actor "Usuário/Visitante" as User
+participant "Frontend" as UI
+
+box "Backend" #f9f9f9
+    participant "Camada de Interface" as CI
+    participant "Camada de Negócio" as CN
+    participant "Camada de Dados" as CD
+end box
+
+box "Infra" #e8f4f8
+    participant "PostgreSQL (DB)" as DB
+end box
+
+== Fluxo: Visualizar Feed com Filtros ==
+
+User -> UI : Aplica filtros (lat, lng, pet_type)
+activate UI
+UI -> CI : GET /posts?lat=x&lng=y&pet_type=pet_type
+activate CI
+CI -> CN : Buscar Posts Filtrados (params)
+activate CN
+CN -> CD : Query Customizada
+activate CD
+CD -> DB : SELECT * FROM posts WHERE...
+activate DB
+DB --> CD : lista_posts
+deactivate DB
+CD --> CN : lista_posts
+deactivate CD
+CN -> CN : Formata dados (URLs das imagens)
+CN --> CI : JSON(posts_list)
+deactivate CN
+CI --> UI : 200 OK
+UI --> User : Renderiza cards no Feed
+deactivate UI
+
+== Fluxo: Visualizar Mapa ==
+
+User -> UI : Clica na aba Mapa
+activate UI
+UI -> CI : GET /map/pins
+CI -> CN : Obter coordenadas (status=active)
+activate CN
+CN -> CD : Busca coordenadas e IDs
+activate CD
+CD -> DB : SELECT id, lat, lng FROM posts
+activate DB
+DB --> CD : geo_data
+deactivate DB
+CD --> CN : geo_data
+deactivate CD
+CN --> CI : geo_json
+deactivate CN
+CI --> UI : 200 OK
+UI --> User : Renderiza Pins no Mapa
+deactivate UI
+@enduml

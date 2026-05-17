@@ -1,0 +1,97 @@
+@startuml
+autonumber
+skinparam style strictuml
+
+actor "Visitante" as Guest
+participant "Frontend" as UI
+
+box "Backend" #f9f9f9
+    participant "Camada de Interface" as CI
+    participant "Camada de Negócio" as CN
+    participant "Camada de Dados" as CD
+end box
+
+box "Infra" #e8f4f8
+    participant "PostgreSQL (DB)" as DB
+end box
+
+== Fluxo: Cadastrar Usuário ==
+
+Guest -> UI : Preenche dados (name, email, password, contact)
+activate UI
+UI -> CI : POST /auth/register
+activate CI
+CI -> CI : Valida Entrada (RegisterSchema)
+
+alt Dados inválidos ou incompletos
+    CI --> UI : 400 Bad Request
+    UI --> Guest : Exibe alertas nos campos
+else Dados OK
+    CI -> CN : Registrar novo usuário (data)
+    activate CN
+    CN -> CD : Busca usuário por email
+    activate CD
+    CD -> DB : SELECT id FROM users WHERE email=email
+    activate DB
+    DB --> CD : user_id ou null
+    deactivate DB
+    CD --> CN : user_id ou null
+    deactivate CD
+
+    alt Email já cadastrado
+        CN --> CI : Erro: Email em uso
+        CI --> UI : 409 Conflict
+        UI --> Guest : "Este e-mail já está cadastrado."
+    else Email disponível
+    CN -> CN : Hash da Senha
+    CN -> CD : Salva Usuário
+    activate CD
+    CD -> DB : INSERT INTO users (name, email, password, contact)
+    activate DB
+    DB --> CD : user_id
+    deactivate DB
+    CD --> CN : user_id
+    deactivate CD
+    CN --> CI : Sucesso
+    deactivate CN
+    CI --> UI : 201 Created
+    UI --> Guest : Faz login
+end
+
+== Fluxo: Fazer Login ==
+
+Guest -> UI : Email e Senha
+UI -> CI : POST /auth/login
+CI -> CI : Valida Entrada (LoginSchema)
+
+alt Dados inválidos ou incompletos
+    CI --> UI : 400 Bad Request
+    UI --> Guest : Exibe alertas nos campos
+else Dados OK
+    CI -> CN : Autenticar (email, senha)
+    activate CN
+    CN -> CD : Busca usuário por email
+    activate CD
+    CD -> DB : SELECT * FROM users WHERE email=email
+    activate DB
+    DB --> CD : user_data (hash)
+    deactivate DB
+
+    alt Credenciais Inválidas
+        CD --> CN : Erro Autenticação
+        CN --> CI : Erro Autenticação
+        CI --> UI : 401 Unauthorized
+        UI --> Guest : Exibe alertas nos campos
+    else Credenciais OK
+        CD --> CN : user_id, role
+        deactivate CD
+        CN -> CN : Gera JWT Token
+        CN --> CI : token, user_info
+        deactivate CN
+        CI --> UI : 200 OK
+        deactivate CI
+        UI --> Guest : Login realizado (Sessão ativa)
+        deactivate UI
+    end
+end
+@enduml
