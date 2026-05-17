@@ -9,6 +9,15 @@ const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:5000';
 const STATUS_LABEL = {
   lost: 'Perdido',
   found: 'Encontrado',
+  perdido: 'Perdido',
+  encontrado: 'Encontrado',
+};
+
+const STATUS_CLASS = {
+  lost: 'lost',
+  found: 'found',
+  perdido: 'lost',
+  encontrado: 'found',
 };
 
 function PetCard({ pet, onDelete }) {
@@ -23,7 +32,7 @@ function PetCard({ pet, onDelete }) {
   return (
     <div className="feed-card">
       <div className="feed-card-header">
-        <span className={`feed-badge feed-badge--${pet.status}`}>
+        <span className={`feed-badge feed-badge--${STATUS_CLASS[pet.status] ?? pet.status}`}>
           {STATUS_LABEL[pet.status] ?? pet.status}
         </span>
         {pet.type && <span className="feed-card-type">{pet.type}</span>}
@@ -152,6 +161,9 @@ export default function Feed() {
             onClick={() => setShowMyPosts(false)}
           >
             Feed
+          </button>
+          <button className="feed-new-post-btn" onClick={() => navigate('/create-post')}>
+            Criar postagem
           </button>
           <button
             className={showMyPosts ? 'feed-nav-btn feed-nav-btn--active' : 'feed-nav-btn'}

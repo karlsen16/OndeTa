@@ -40,6 +40,22 @@
   background-color: #f0ebff;
 }
 
+.feed-new-post-btn {
+  background: none;
+  border: 1.5px solid #9b8fd4;
+  border-radius: 8px;
+  color: #5b4a8a;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.4rem 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.feed-new-post-btn:hover {
+  background-color: #f0ebff;
+}
+
 .feed-logout-btn {
   background: none;
   border: 1.5px solid #c4b8e8;
@@ -128,8 +144,8 @@
 }
 
 .feed-badge--found {
-  background-color: #e8f5e9;
-  color: #2e7d32;
+  background-color: #e0eaf8;
+  color: #2a5298;
 }
 
 .feed-card-type {
