@@ -1,0 +1,65 @@
+@startuml
+autonumber
+skinparam style strictuml
+
+actor "Usuário" as User
+participant "Frontend" as UI
+
+box "Backend" #f9f9f9
+    participant "Camada de Interface" as CI
+    participant "Camada de Negócio" as CN
+    participant "Camada de Dados" as CD
+end box
+
+box "Infra" #e8f4f8
+    participant "Storage" as Cloud
+    participant "PostgreSQL (DB)" as DB
+end box
+
+== Fluxo: Remover uma Foto ==
+
+User -> UI : Clica em "Remover Foto"
+activate UI
+UI -> CI : DELETE /me/images/{img_id}
+activate CI
+CI -> CI : Identifica o usuário (user_id)
+CI -> CN : Deleta imagem (user_id, img_id)
+activate CN
+CN -> CD : Verifica quem é dono do post com a img_id
+activate CD
+CD -> DB : SELECT user_id FROM posts JOIN images WHERE img_id
+activate DB
+DB --> CD : user_id
+deactivate DB
+CD --> CN : post.user_id
+deactivate CD
+CN -> CN : Valida Posse (user_id == post.user_id)
+
+alt Não é o dono
+    CN --> CI : Erro autenticação
+    CI --> UI : 403 Forbidden
+    UI --> User : "Não tem autorização para deletar essa imagem."
+else Usuário é dono da imagem
+    CN -> Cloud : Solicita exclusão no storage
+    activate Cloud
+    Cloud --> CN : Sucesso
+    deactivate Cloud
+    CN -> CD : Solicita exclusão no DB
+    activate CD
+    CD -> DB : DELETE FROM images WHERE id={img_id}
+    activate DB
+    DB --> CD : Sucesso
+    deactivate DB
+    CD --> CN : Sucesso
+    deactivate CD
+    CN --> CI:  Sucesso
+    deactivate CN
+    CI --> UI : 204 Sucesso
+    deactivate CI
+    UI -> User : Atualiza galeria na tela
+    deactivate UI
+end
+
+
+
+@enduml

@@ -1,0 +1,66 @@
+@startuml
+autonumber
+skinparam style strictuml
+
+actor "Visitante" as Guest
+participant "Frontend" as UI
+
+box "Backend" #f9f9f9
+    participant "Camada de Interface" as CI
+    participant "Camada de Negócio" as CN
+    participant "Camada de Dados" as CD
+end box
+
+box "Infra" #e8f4f8
+    participant "PostgreSQL (DB)" as DB
+end box
+
+== Fluxo: Cadastrar Usuário ==
+
+Guest -> UI : Preenche dados (data)
+activate UI
+UI -> CI : POST /auth/register (data)
+activate CI
+CI -> CI : Valida Entrada (RegisterSchema)
+activate CI
+deactivate CI
+
+alt Dados inválidos ou incompletos
+    CI --> UI : 400 Bad Request
+    UI --> Guest : Exibe alertas nos campos
+else Dados OK
+    CI -> CN : Envia dados para novo registro (data)
+    activate CN
+    CN -> CD : Verifica disponibilidade (email)
+    activate CD
+    CD -> DB : Verifica se já existe algum registro (email)
+    activate DB
+    DB --> CD : Existe / Não existe
+    deactivate DB
+    CD --> CN : Disponível / Indisponível
+    deactivate CD
+
+    alt Email já cadastrado
+        CN --> CI : ConflictError
+        CI --> UI : 409 Conflict
+        UI --> Guest : "Este e-mail já está cadastrado."
+    else Email disponível
+    CN -> CN : Gera hash da senha (password)
+    activate CN
+    deactivate CN
+    CN -> CD : Salva novo usuário (data)
+    activate CD
+    CD -> DB : Registra novo usuário (data)
+    activate DB
+    deactivate DB
+    CD --> CN : Sucesso
+    deactivate CD
+    CN --> CI : Cadastro realizado
+    deactivate CN
+    CI --> UI : 201 Created
+    deactivate CI
+    UI --> Guest : Inicia sessão
+    deactivate UI
+    end
+end
+@enduml
