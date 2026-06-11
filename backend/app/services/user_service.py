@@ -1,40 +1,42 @@
-from app.repositories.user_repository import UserRepository
-from app.extensions import bcrypt
+from app.extensions import db
+from app.models.user import User
+from werkzeug.exceptions import NotFound
 
 
 class UserService:
 
     @staticmethod
-    def get_all_users():
-
-        return UserRepository.get_all()
+    def get_user_by_id(user_id):
+        return User.query.get_or_404(user_id)
 
     @staticmethod
-    def get_user_by_id(user_id):
-        user = UserRepository.get_by_id(user_id)
+    def update_profile(user_id, data):
+        user = User.query.get_or_404(user_id)
 
-        if not user:
-            raise ValueError(
-                "Usuário não encontrado"
-            )
+        # Campos permitidos para o próprio usuário editar
+        allowed_fields = ['name', 'phone', 'avatar_url']
+        for key in allowed_fields:
+            if key in data:
+                setattr(user, key, data[key])
 
+        db.session.commit()
         return user
 
+    # --- LÓGICA DE ADMIN ---
+
     @staticmethod
-    def update_user(user_id, data):
-        user = UserRepository.get_by_id(user_id)
+    def list_all_users_admin():
+        return User.query.all()
 
-        if not user:
-            raise ValueError(
-                "Usuário não encontrado"
-            )
+    @staticmethod
+    def update_user_status_admin(user_id, data):
+        user = User.query.get_or_404(user_id)
 
-        if "password" in data:
-            hashed_password = (
-                bcrypt.generate_password_hash(
-                    data["password"]
-                ).decode("utf-8")
-            )
-            data["password"] = hashed_password
+        # Admin pode mudar role e status
+        if 'status' in data:
+            user.status = data['status']
+        if 'role' in data:
+            user.role = data['role']
 
-        return UserRepository.update(user, data)
+        db.session.commit()
+        return user

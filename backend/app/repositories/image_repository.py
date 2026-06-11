@@ -1,5 +1,6 @@
 from app.extensions import db
 from app.models import Image
+from sqlalchemy import select
 
 
 class ImageRepository:
@@ -17,7 +18,8 @@ class ImageRepository:
 
     @staticmethod
     def get_by_pet_id(pet_id):
-        return Image.query.filter_by(pet_id=pet_id).all()
+        stmt = select(Image).filter_by(pet_id=pet_id)
+        return db.session.execute(stmt).scalars().all()
 
     @staticmethod
     def delete(image):
