@@ -1,0 +1,83 @@
+@startuml
+autonumber
+skinparam style strictuml
+
+actor "Visitante" as Guest
+participant "Frontend" as UI
+
+box "Backend" #f9f9f9
+    participant "Camada de Interface" as CI
+    participant "Camada de Negócio" as CN
+    participant "Camada de Dados" as CD
+end box
+
+box "Infra" #e8f4f8
+    participant "PostgreSQL (DB)" as DB
+end box
+
+== Fluxo: Fazer Login ==
+
+Guest -> UI : Envia credenciais (email, password)
+activate UI
+UI -> CI : POST /auth/login (email, password)
+activate CI
+CI -> CI : Valida Entrada (LoginSchema)
+activate CI
+deactivate CI
+
+alt Dados inválidos ou incompletos
+    CI --> UI : 400 Bad Request
+    UI --> Guest : Exibe alertas nos campos
+else Dados OK
+    CI -> CN : Autentica (email, password)
+    activate CN
+    CN -> CD : Busca usuário (email)
+    activate CD
+    CD -> DB : Obtém usuário (email)
+    activate DB
+    DB --> CD : User / Null
+    deactivate DB
+    CD --> CN : User / Null
+    deactivate CD
+    CN -> CN : Valida credenciais
+    activate CN
+    deactivate CN
+
+    alt Credenciais Inválidas
+        CN --> CI : UnauthorizedError
+        CI --> UI : 401 Unauthorized
+        UI --> Guest : Exibe alertas nos campos
+    else Credenciais OK
+        CN -> CN : Verifica status (User)
+        activate CN
+        deactivate CN
+
+        alt Conta banida
+            CN --> CI : ForbiddenError
+            CI --> UI : 403 Forbidden
+            UI --> Guest : "Esta conta foi banida pela moderação."
+        else Conta ativa ou inativa
+            CN -> CN : Gera JWT com claims (User)
+            activate CN
+            deactivate CN
+            CN --> CI : token, User
+            deactivate CN
+            CI -> CI : Aplica AuthResponseSchema
+            activate CI
+            deactivate CI
+            CI --> UI : 200 OK (AuthResponse)
+            deactivate CI
+
+            alt Conta inativa
+                UI -> UI : Exibe opção para ativar a conta
+                activate UI
+                deactivate UI
+                UI --> Guest : Ativa conta / Volta para feed
+            else Conta ativa
+                UI --> Guest : Login realizado
+                deactivate UI
+            end
+        end
+    end
+end
+@enduml
