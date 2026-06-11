@@ -1,22 +1,16 @@
 from flask import request, jsonify
 from app.services.image_service import ImageService
 from app.services.pet_service import PetService
+from app.schemas.image_schema import ImageResponseSchema
 from flask_jwt_extended import get_jwt_identity
-from app.utils.storage import (
-    upload_image,
-    delete_image_storage
-)
+from app.utils.storage import upload_image, delete_image_storage
 from app.utils.image_utils import compress_image
 
-ALLOWED_EXTENSIONS = {
-    "png",
-    "jpg",
-    "jpeg",
-    "webp"
-}
-
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
 MAX_FILE_SIZE = 5 * 1024 * 1024
 
+image_schema = ImageResponseSchema()
+images_schema = ImageResponseSchema(many=True)
 
 def allowed_file(filename):
     return (
@@ -75,7 +69,7 @@ class ImageController:
             "pet_id": pet_id
         })
 
-        return jsonify(image.to_dict()), 201
+        return jsonify(image_schema.dump(image)), 201
 
 
 
@@ -91,7 +85,7 @@ class ImageController:
 
         images = ImageService.get_images_by_pet(pet_id)
 
-        return jsonify([image.to_dict() for image in images]), 200
+        return jsonify(images_schema.dump(images)), 200
 
     @staticmethod
     def delete_image(pet_id, image_id):

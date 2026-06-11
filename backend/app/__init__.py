@@ -1,7 +1,9 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
+from marshmallow import ValidationError
 from .config import Config
 from app.extensions import db, bcrypt, jwt
+from app.utils.exceptions import APIError
 import os
 
 def create_app():
@@ -15,14 +17,38 @@ def create_app():
     bcrypt.init_app(app)
     jwt.init_app(app)
 
-    from app.models import User, Pet, Image
+    from app.models import User, Post, Image
 
     from app.routes.auth_routes import auth_bp
-    from app.routes.pet_routes import pet_bp
-    from app.routes.user_routes import user_bp
+    from app.routes.post_routes import post_bp
+    from app.routes.me_routes import me_bp
+    from app.routes.admin_routes import admin_bp
+    from app.routes.map_routes import map_bp
 
     app.register_blueprint(auth_bp)
-    app.register_blueprint(pet_bp)
-    app.register_blueprint(user_bp)
+    app.register_blueprint(post_bp)
+    app.register_blueprint(me_bp)
+    app.register_blueprint(admin_bp)
+    app.register_blueprint(map_bp)
 
     return app
+
+def register_error_handlers(app):
+    @app.errorhandler(APIError)
+    def handle_api_error(error):
+        return jsonify(error.to_dict()), error.code
+
+    @app.errorhandler(500)
+    def handle_unknown_error(error):
+        return jsonify({
+            "status": "error",
+            "message": "Erro inesperado no servidor"
+        }), 500
+
+    @app.errorhandler(ValidationError)
+    def handle_marshmallow_validation(err):
+        return jsonify({
+            "status": "error",
+            "message": "Dados inválidos",
+            "details": err.messages
+        }), 400

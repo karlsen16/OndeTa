@@ -2,11 +2,7 @@ from flask import request, jsonify
 from marshmallow import ValidationError
 from flask_jwt_extended import create_access_token
 from app.services.auth_service import AuthService
-from app.schemas.auth_schema import (
-    LoginSchema,
-    RegisterSchema,
-    AuthResponseSchema
-)
+from app.schemas.auth_schema import LoginSchema, RegisterSchema, AuthResponseSchema
 from app.schemas.user_schema import UserResponseSchema
 
 login_schema = LoginSchema()

@@ -1,5 +1,6 @@
 from app.extensions import db
 from app.models import User
+from sqlalchemy import select
 
 
 class UserRepository:
@@ -13,15 +14,17 @@ class UserRepository:
 
     @staticmethod
     def get_by_id(user_id):
-        return User.query.get(user_id)
+        return db.session.get(User, user_id)
 
     @staticmethod
     def get_by_email(email):
-        return User.query.filter_by(email=email).first()
+        stmt = select(User).filter_by(email=email)
+        return db.session.execute(stmt).scalar_one_or_none()
 
     @staticmethod
     def get_all():
-        return User.query.all()
+        stmt = select(User)
+        return db.session.execute(stmt).scalars().all()
 
     @staticmethod
     def update(user, data):

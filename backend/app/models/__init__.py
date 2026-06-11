@@ -3,5 +3,5 @@
 # alembic upgrade head                              /envia pro banco de dados
 
 from .user import User
-from .pet import Pet
+from .post import Post
 from .image import Image
