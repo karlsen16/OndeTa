@@ -10,16 +10,8 @@ def compress_image(file):
         image = image.convert("RGB")
 
     image.thumbnail(MAX_SIZE)
-
     output = BytesIO()
-
-    image.save(
-        output,
-        format="JPEG",
-        quality=75,
-        optimize=True
-    )
-
+    image.save(output, format="JPEG", quality=75, optimize=True, progressive=True)
     output.seek(0)
 
     return output
