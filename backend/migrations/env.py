@@ -23,7 +23,7 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 from app.extensions import db
-from app.models import User, Pet, Image
+from app.models import User, Post, Image
 
 target_metadata = db.metadata
 

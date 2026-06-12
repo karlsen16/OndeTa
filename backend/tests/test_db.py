@@ -1,20 +1,20 @@
 from app import create_app
 from app.extensions import db
 from app.models import User
-from app.repositories.pet_repository import PetRepository
+from app.repositories.post_repository import PostRepository
 
 app = create_app()
 
-def list_pets():
-    pets = PetRepository.get_all()
-
+def list_posts():
     print("\nLista de pets:")
-    for pet in pets:
-        print(f"- {pet.id}: {pet.name} ({pet.status})")
+    repo = PostRepository()
+    for i in range(1,11):
+        post = repo.get_by_id(i)
+        print(f"- {post.id}: {post.pet_name} ({post.status})")
 
 
 if __name__ == "__main__":
     with app.app_context():
         print("Testando conexão com banco...")
-        list_pets()
+        list_posts()
         print("\n✅ Teste finalizado com sucesso!")

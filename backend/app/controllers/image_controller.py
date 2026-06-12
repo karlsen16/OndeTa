@@ -1,9 +1,9 @@
 from flask import request, jsonify
 from app.services.image_service import ImageService
-from app.services.pet_service import PetService
+from app.services.post_service import PostService
 from app.schemas.image_schema import ImageResponseSchema
 from flask_jwt_extended import get_jwt_identity
-from app.utils.storage import upload_image, delete_image_storage
+from app.services.storage_service import upload_image, delete_image_storage
 from app.utils.image_utils import compress_image
 
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
