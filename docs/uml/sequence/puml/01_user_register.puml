@@ -48,18 +48,25 @@ else Dados OK
     CN -> CN : Gera hash da senha (password)
     activate CN
     deactivate CN
-    CN -> CD : Salva novo usuário (data)
+    CN -> CD : Salva novo usuário (data, hash)
     activate CD
-    CD -> DB : Registra novo usuário (data)
+    CD -> DB : Registra novo usuário\n(status=active, role=user)
     activate DB
+    DB --> CD : User
     deactivate DB
-    CD --> CN : Sucesso
+    CD --> CN : User
     deactivate CD
-    CN --> CI : Cadastro realizado
+    CN -> CN : Gera JWT com claims (User)
+    activate CN
     deactivate CN
-    CI --> UI : 201 Created
+    CN --> CI : token, User
+    deactivate CN
+    CI -> CI : Aplica AuthResponseSchema (token, User)
+    activate CI
     deactivate CI
-    UI --> Guest : Inicia sessão
+    CI --> UI : 201 Created (AuthResponse)
+    deactivate CI
+    UI --> Guest : Conta criada e login realizado
     deactivate UI
     end
 end

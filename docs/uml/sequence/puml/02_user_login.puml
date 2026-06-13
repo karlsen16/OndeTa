@@ -56,27 +56,23 @@ else Dados OK
             CN --> CI : ForbiddenError
             CI --> UI : 403 Forbidden
             UI --> Guest : "Esta conta foi banida pela moderação."
-        else Conta ativa ou inativa
+        else Conta inativa
+            CN --> CI : ConflictError
+            CI --> UI : 409 Conflict
+            UI --> Guest : "Esta conta está inativa e pode ser reativada."
+        else Conta ativa
             CN -> CN : Gera JWT com claims (User)
             activate CN
             deactivate CN
             CN --> CI : token, User
             deactivate CN
-            CI -> CI : Aplica AuthResponseSchema
+            CI -> CI : Aplica AuthResponseSchema (token, User)
             activate CI
             deactivate CI
             CI --> UI : 200 OK (AuthResponse)
             deactivate CI
-
-            alt Conta inativa
-                UI -> UI : Exibe opção para ativar a conta
-                activate UI
-                deactivate UI
-                UI --> Guest : Ativa conta / Volta para feed
-            else Conta ativa
-                UI --> Guest : Login realizado
-                deactivate UI
-            end
+            UI --> Guest : Login realizado
+            deactivate UI
         end
     end
 end
