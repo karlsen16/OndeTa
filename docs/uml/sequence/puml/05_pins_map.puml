@@ -15,54 +15,12 @@ box "Infra" #e8f4f8
     participant "PostgreSQL (DB)" as DB
 end box
 
-== Fluxo: Visualizar Feed ==
-
-User -> UI : Aplica filtros no feed (params)
-activate UI
-UI -> CI : GET /posts?params
-activate CI
-CI -> CI : Valida Entrada (FeedRequestSchema)
-activate CI
-deactivate CI
-
-alt Parâmetros inválidos ou incompletos
-    CI --> UI : 400 Bad Request
-    UI --> User : Exibe alertas nos filtros
-else Parâmetros Ok
-    CI -> CN : Buscar Posts Filtrados (params)
-    activate CN
-    CN -> CN : Tratamento de Defaults:\n- Se coords null: Curitiba\n- Se radius null: 10km\n- Se filters null: "Todos"
-    activate CN
-    deactivate CN
-    CN -> CD : Query Customizada (params)
-    activate CD
-    note right of CD
-        A query aplica filtros:
-        - status IN ('active', 'resolved')
-        - st_distance < radius
-        - pet_type AND category (se enviados)
-        - JOIN com User e Images (Eager Loading)
-    end note
-    CD -> DB : SELECT + JOINs + Geo + Paginação
-    activate DB
-    DB --> CD : Lista de Objetos (Posts + Relacionados)
-    deactivate DB
-    CD --> CN : Lista de Objetos
-    deactivate CD
-    CN -> CN : Formata PostResponseSchema\n(Filtra campos do Autor e gera lista de Images)
-    activate CN
-    deactivate CN
-    CN --> CI : 0..* PostResponseSchema
-    deactivate CN
-    CI --> UI : 200 OK
-    deactivate CI
-    UI --> User : Exibe cards no Feed
-    deactivate UI
-end
-
 == Fluxo: Visualizar Mapa ==
 
-User -> UI : Clica na aba Mapa
+User -> UI : Acessa Mapa
+opt Utiliza filtros
+    User -> UI : Define filtros
+end
 activate UI
 UI -> CI : GET /map/pins?params
 activate CI
@@ -74,93 +32,41 @@ alt Parâmetros inválidos ou incompletos
     CI --> UI : 400 Bad Request
     UI --> User : Exibe alertas nos filtros
 else Parâmetros Ok
-    CI -> CN : Buscar Pins Filtrados (params)
+    CI -> CN : Buscar Posts (params)
     activate CN
-    CN -> CN : Tratamento de Defaults:\n- Se coords null: Curitiba\n- Se filters null: "Todos"
+    CN -> CN : Aplica valores padrão se necessário (params)
     activate CN
     deactivate CN
-    CN -> CD : Contar pins na área (params)
+    CN -> CD : Buscar postagens públicas (params)
     activate CD
-    CD -> DB : SELECT COUNT(id) FROM posts WHERE...
+    note right of CD
+    Monta consulta dinâmica
+    utilizando filtros e regras
+    de visibilidade
+    end note
+    CD -> DB : Consulta postagens (params)
     activate DB
-    DB --> CD : total_count
+    DB --> CD : Posts
     deactivate DB
-    CD --> CN : total_count
+    CD --> CN : Posts
     deactivate CD
+    CN -> CN : Verifica densidade de pins (Posts)
+    activate CN
+    deactivate CN
     alt Excede limite
-        CN --> CI : OversizedContentError
-        CI --> UI : 413 Content Too Large
+        CN --> CI : DensityLimitError
+        CI --> UI : 400 Bad Request
         UI --> User : "Excedeu limite de pins."
     else Densidade Ok
-        CN -> CD : Buscar Pins (params)
-        activate CD
-        CD -> DB : SELECT id, params FROM posts...
-        activate DB
-        DB --> CD : Lista de Objetos
-        deactivate DB
-        CD --> CN : Lista de Objetos
-        deactivate CD
-        CN --> CI : 0..* PinResponseSchema
+        CN --> CI : Posts
         deactivate CN
-        CI --> UI : 200 OK
+        CI -> CI : Aplica PinResponseSchema (Posts)
+        activate CI
+        deactivate CI
+        CI --> UI : 200 OK (0..* PinResponse)
         deactivate CI
         UI --> User : Exibe mapa com pins
         deactivate UI
     end
 end
-
-== Fluxo: Visualizar Detalhes de um Pin no Mapa ==
-
-User -> UI : Clica em um Pin no Mapa
-activate UI
-UI -> CI : GET /posts/post_id
-activate CI
-CI -> CI : Valida Entrada (int)
-activate CI
-deactivate CI
-
-alt Parâmetros inválidos ou incompletos
-    CI --> UI : 400 Bad Request
-    UI --> User : Exibe alertas
-else Parâmetros Ok
-    CI -> CN : Obter Detalhes do Post (post_id)
-    activate CN
-    CN -> CD : Buscar Post por ID (Eager Loading)
-    activate CD
-    CD -> DB : SELECT + JOINs (User, Images) WHERE id = post_id
-    activate DB
-    DB --> CD : Objeto (Post + Relacionados) ou null
-    deactivate DB
-    CD --> CN : Objeto ou null
-    deactivate CD
-
-    alt Post não existe
-        CN --> CI : ResourceNotFoundError
-        CI --> UI : 404 Not Found
-        UI --> User : "Post não encontrado."
-    else Post existe
-        CN -> CN : Verifica status
-        activate CN
-        deactivate CN
-
-        alt Status é 'hidden' ou 'banned'
-            CN --> CI : ResourceNotFoundError
-            CI --> UI : 404 Not Found
-            UI --> User : "Post não encontrado."
-        else Status é 'active' ou 'resolved'
-            CN -> CN : Formata PostResponseSchema\n(Filtra campos do Autor e gera lista de Images)
-            activate CN
-            deactivate CN
-            CN --> CI : PostResponseSchema
-            deactivate CN
-            CI --> UI : 200 OK
-            deactivate CI
-            UI --> User : Abre detalhes completos
-            deactivate UI
-        end
-    end
-end
-deactivate CN
-deactivate CI
-deactivate UI
 @enduml
