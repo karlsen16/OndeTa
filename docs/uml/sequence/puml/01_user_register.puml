@@ -3,71 +3,48 @@ autonumber
 skinparam style strictuml
 
 actor "Visitante" as Guest
-participant "Frontend" as UI
+boundary "Frontend" as UI
 
 box "Backend" #f9f9f9
-    participant "Camada de Interface" as CI
-    participant "Camada de Negócio" as CN
-    participant "Camada de Dados" as CD
+    control "auth_controller" as Ctrl <<control>>
+    control "auth_service" as Serv <<service>>
+    collections "user_repository" as Repo <<repository>>
 end box
 
 box "Infra" #e8f4f8
-    participant "PostgreSQL (DB)" as DB
+    database "PostgreSQL (DB)" as DB
 end box
 
 == Fluxo: Cadastrar Usuário ==
 
-Guest -> UI : Preenche dados (data)
-activate UI
-UI -> CI : POST /auth/register (data)
-activate CI
-CI -> CI : Valida Entrada (RegisterSchema)
-activate CI
-deactivate CI
+Guest -> UI++: Preenche dados (data)
+UI -> Ctrl++: POST /auth/register (data)
+Ctrl -> Ctrl++--: Valida entrada (RegisterSchema)
 
 alt Dados inválidos ou incompletos
-    CI --> UI : 400 Bad Request
-    UI --> Guest : Exibe alertas nos campos
-else Dados OK
-    CI -> CN : Envia dados para novo registro (data)
-    activate CN
-    CN -> CD : Verifica disponibilidade (email)
-    activate CD
-    CD -> DB : Verifica se já existe algum registro (email)
-    activate DB
-    DB --> CD : Existe / Não existe
-    deactivate DB
-    CD --> CN : Disponível / Indisponível
-    deactivate CD
-
-    alt Email já cadastrado
-        CN --> CI : ConflictError
-        CI --> UI : 409 Conflict
-        UI --> Guest : "Este e-mail já está cadastrado."
-    else Email disponível
-    CN -> CN : Gera hash da senha (password)
-    activate CN
-    deactivate CN
-    CN -> CD : Salva novo usuário (data, hash)
-    activate CD
-    CD -> DB : Registra novo usuário\n(status=active, role=user)
-    activate DB
-    DB --> CD : User
-    deactivate DB
-    CD --> CN : User
-    deactivate CD
-    CN -> CN : Gera JWT com claims (User)
-    activate CN
-    deactivate CN
-    CN --> CI : token, User
-    deactivate CN
-    CI -> CI : Aplica AuthResponseSchema (token, User)
-    activate CI
-    deactivate CI
-    CI --> UI : 201 Created (AuthResponse)
-    deactivate CI
-    UI --> Guest : Conta criada e login realizado
-    deactivate UI
-    end
+    note right of Ctrl #f8d7da: **raise** ValidationError
 end
+
+Ctrl -> Serv++: register(data)
+Serv -> Serv++--: _check_email_availability(email)
+Serv -> Repo++: get_user(email)
+Repo -> DB++: Obtém User (email)
+DB --> Repo--: User / Null
+Repo --> Serv--: User / Null
+
+alt Email indisponível
+    note right of Serv #f8d7da: **raise** ConflictError
+end
+
+Serv -> Serv++--: generate_password_hash(password)
+Serv -> Repo++: create(user_data)
+Repo -> DB++: Cria User (user_data)
+DB --> Repo--: User
+Repo --> Serv--: User
+Serv -> Serv++--: generate_token(user)
+Serv --> Ctrl--: token, User
+Ctrl -> Ctrl++--: Aplica AuthResponseSchema (token, User)
+Ctrl --> UI--: AuthResponse
+note right of UI #d4edda: **Status:** 201 Created
+UI --> Guest--: Conta criada e login realizado
 @enduml

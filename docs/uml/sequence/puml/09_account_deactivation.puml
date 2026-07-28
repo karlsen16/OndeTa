@@ -1,0 +1,47 @@
+@startuml
+autonumber
+skinparam style strictuml
+
+actor "Usuário" as User
+boundary "Frontend" as UI
+
+box "Backend" #f9f9f9
+    control "Controller" as Ctrl <<control>>
+    control "Service" as Serv <<service>>
+    collections "Repository" as Repo <<repository>>
+end box
+
+box "Infra" #e8f4f8
+    database "PostgreSQL (DB)" as DB
+end box
+
+== Fluxo: Desativar Minha Conta ==
+
+User -> UI++: Clica em "Desativar Minha Conta"
+UI -> UI++--: Solicita confirmação
+User -> UI: Confirma operação
+UI -> Ctrl++: POST /me/deactivate (token)
+
+group ref
+    note right of Ctrl #fff3cd: **Fluxo:** Autenticação e Autorização
+end
+
+Ctrl -> Serv++: Desativar (User)
+Serv -> Repo++: Editar User (user_id, status=inactive)
+Repo -> DB++: Atualiza User (user_id, status)
+DB --> Repo--: Sucesso
+Repo --> Serv--: Sucesso
+
+note right of Serv #fff3cd
+**Aplicação da RN09:**
+Cascata de Inatividade
+end note
+Serv -> Repo++: Editar Posts (post_ids, status=hidden)
+Repo -> DB++: Atualiza Posts (post_ids, status)
+DB --> Repo--: Sucesso
+Repo --> Serv--: Sucesso
+Serv --> Ctrl--: Sucesso
+Ctrl --> UI--: Sucesso
+note right of UI #d4edda: **Status:** 204 No Content
+UI --> User--: Redireciona para página inicial
+@enduml

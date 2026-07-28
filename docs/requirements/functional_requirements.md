@@ -46,7 +46,7 @@ Esta seção define os estados possíveis das principais entidades do sistema. E
 
 - **[RF04] Desativação de Conta:** O usuário deve poder desativar sua própria conta, alterando seu status de `active` para `inactive`.
 
-- **[RF05] Reativação de Conta:** O sistema deve permitir que usuários com status `inactive` solicitem a reativação de sua conta mediante nova validação de credenciais, alterando seu status para `active` e efetuando o login automaticamente. 
+- **[RF05] Reativação de Conta:** O sistema deve permitir que usuários com status `inactive` solicitem a reativação de sua conta mediante nova validação de credenciais, alterando seu status para `active` e efetuando o login automaticamente. **Observação:** A exclusão definitiva de contas de usuário não faz parte do escopo deste projeto.
 
 ---
 
@@ -70,10 +70,10 @@ Esta seção define os estados possíveis das principais entidades do sistema. E
 
 - **[RF12] Visualização em Mapa:** O sistema deve exibir pins geolocalizados de postagens públicas.
 
-- **[RF13] Busca Geográfica e Filtros:** O sistema deve permitir a busca de postagens públicas utilizando filtros por tipo de pet, categoria e distância máxima em relação a um ponto geográfico de referência informado pelo usuário. Caso nenhum ponto de referência seja informado, deverá ser utilizada uma coordenada padrão configurada pelo sistema. Caso nenhum raio seja informado, deverá ser utilizado um valor padrão de 10 km. Os filtros devem ser aplicáveis tanto no feed quanto no mapa.
+- **[RF13] Busca Geográfica e Filtros:** O sistema deve permitir a busca de postagens públicas utilizando filtros por tipo de pet, categoria, status e distância máxima em relação a um ponto geográfico de referência informado pelo usuário. Caso nenhum ponto de referência seja informado, deverá ser utilizada uma coordenada padrão configurada pelo sistema. Caso nenhum raio seja informado, deverá ser utilizado um valor padrão de 10 km. Os filtros devem ser aplicáveis tanto no feed quanto no mapa.
 
-- **[RF14] Detalhes da Postagem:** O sistema deve exibir todas as informações e imagens de uma postagem pública selecionada.
-
+- **[RF14] Detalhes da Postagem:** O sistema deve permitir a visualização detalhada no mapa de uma postagem selecionada, respeitando as regras de visibilidade e autorização definidas pelo sistema.
+                                   
 ---
 
 ## 3.4 Moderação (Administrativo)

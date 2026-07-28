@@ -1,87 +1,72 @@
 @startuml
-autonumber
 skinparam style strictuml
 
 actor "Visitante" as Guest
-participant "Frontend" as UI
+boundary "Frontend" as UI
 
 box "Backend" #f9f9f9
-    participant "Camada de Interface" as CI
-    participant "Camada de Negócio" as CN
-    participant "Camada de Dados" as CD
+    control "auth_controller" as Ctrl <<control>>
+    control "auth_service" as Serv <<service>>
+    collections "user_repository" as Repo <<repository>>
 end box
 
 box "Infra" #e8f4f8
-    participant "PostgreSQL (DB)" as DB
+    database "PostgreSQL (DB)" as DB
 end box
 
 == Fluxo: Reativar Conta ==
 
-Guest -> UI : Aceita reativação da conta (email, password)
-activate UI
-UI -> CI : POST /auth/reactivate (email, password)
-activate CI
-CI -> CI : Valida Entrada (LoginSchema)
-activate CI
-deactivate CI
+UI -[hidden]-> UI++
+
+group ref
+    note right of UI #fff3cd: **Origem de extensão:**\nUC2 - Solicitação de Reativação
+end
+
+autonumber
+UI -> UI++--: Oferece a opção de reativação
+Guest -> UI: Aceita reativação da conta
+UI -> Ctrl++: POST /auth/reactivate (email, password)
+Ctrl -> Ctrl++--: Valida entrada (LoginSchema)
 
 alt Dados inválidos ou incompletos
-    CI --> UI : 400 Bad Request
-    UI --> Guest : Exibe alertas nos campos
-else Dados OK
-    CI -> CN : Autentica (email, password)
-    activate CN
-    CN -> CD : Busca usuário (email)
-    activate CD
-    CD -> DB : Obtém usuário (email)
-    activate DB
-    DB --> CD : User / Null
-    deactivate DB
-    CD --> CN : User / Null
-    deactivate CD
-    CN -> CN : Valida credenciais
-    activate CN
-    deactivate CN
-
-    alt Credenciais Inválidas
-        CN --> CI : UnauthorizedError
-        CI --> UI : 401 Unauthorized
-        UI --> Guest : Exibe alertas nos campos
-    else Credenciais OK
-        CN -> CN : Verifica status (User)
-        activate CN
-        deactivate CN
-
-        alt Conta banida
-            CN --> CI : ForbiddenError
-            CI --> UI : 403 Forbidden
-            UI --> Guest : "Esta conta foi banida pela moderação."
-        else Conta ativa
-            CN --> CI : ConflictError
-            CI --> UI : 409 Conflict
-            UI --> Guest : "Esta conta já está ativa."
-        else Conta inativa
-            CN -> CD : Ativa conta (User)
-            activate CD
-            CD -> DB : Altera status do usuário\n(status=active)
-            activate DB
-            DB --> CD : User(status=active)
-            deactivate DB
-            CD --> CN : User
-            deactivate CD
-            CN -> CN : Gera JWT com claims (User)
-            activate CN
-            deactivate CN
-            CN --> CI : token, User
-            deactivate CN
-            CI -> CI : Aplica AuthResponseSchema (token, User)
-            activate CI
-            deactivate CI
-            CI --> UI : 200 OK (AuthResponse)
-            deactivate CI
-            UI --> Guest : Login realizado e conta reativada
-            deactivate UI
-        end
-    end
+    note right of Ctrl #f8d7da: **raise** ValidationError
 end
+
+Ctrl -> Serv++: login(data, reactivation=True)
+Serv -> Repo++: get_user(email)
+Repo -> DB++: Obtém User (email)
+DB --> Repo--: User / Null
+Repo --> Serv--: User / Null
+
+alt Usuário não encontrado
+    note right of Serv #f8d7da: **raise** UnauthorizedError
+end
+
+Serv -> Serv++--: check_password(User, password)
+
+alt Credenciais Inválidas
+    note right of Serv #f8d7da: **raise** UnauthorizedError
+end
+
+Serv -> Serv++--: check_status_policy(User)
+
+alt Conta banida
+    note right of Serv #f8d7da: **raise** ForbiddenError
+end
+
+alt Conta ativa
+    note right of Serv #f8d7da: **raise** ConflictError
+end
+
+Serv -> Repo++: update(User, status=active)
+Repo -> DB++: Atualiza User\n(User, data)
+DB --> Repo--: User
+Repo --> Serv--: User
+
+Serv -> Serv++--: generate_token(user)
+Serv --> Ctrl--: token, User
+Ctrl -> Ctrl++--: Aplica AuthResponseSchema (token, User)
+Ctrl --> UI--: AuthResponse
+note right of UI #d4edda: **Status:** 200 OK
+UI --> Guest--: Conta reativada e login realizado
 @enduml

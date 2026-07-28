@@ -22,7 +22,7 @@
 
 # 3. Desempenho e Escalabilidade
 
-- **[RNF08] Resposta Rápida:** O sistema deve responder consultas de leitura autenticadas ou públicas em até 500 ms para 95% das requisições em condições normais de operação.
+- **[RNF08] Resposta Rápida:** O sistema deve responder consultas de leitura autenticadas ou públicas em até 1 segundo para 95% das requisições em condições normais de operação.
 
 - **[RNF09] Eficiência de Busca Geográfica:** O sistema deve utilizar índices espaciais para otimizar consultas geográficas.
 
@@ -48,14 +48,6 @@
 
 ---
 
-# 6. Responsividade
+# 6. Renderização Geográfica
 
-- **[RNF16] Design Multitela:** A interface deve adaptar-se a dispositivos móveis, tablets e computadores.
-
----
-
-# 7. Disponibilidade e Confiabilidade
-
-- **[RNF17] Uptime do Serviço:** O sistema deve operar de acordo com a disponibilidade garantida pela infraestrutura utilizada.
-
-- **[RNF18] Controle de Volume Geográfico:** O sistema deve limitar a quantidade de registros geográficos retornados por consulta para preservar o desempenho de renderização do cliente.
+- **[RNF16] Controle de Volume Geográfico:** O sistema deve limitar a quantidade de registros geográficos retornados por consulta para preservar o desempenho de renderização do cliente.

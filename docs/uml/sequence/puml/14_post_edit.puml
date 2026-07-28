@@ -1,0 +1,51 @@
+@startuml
+autonumber
+skinparam style strictuml
+
+actor "Usuário" as User
+participant "Frontend" as UI
+
+box "Backend" #f9f9f9
+    participant "Camada de Interface" as CI
+    participant "Camada de Negócio" as CN
+    participant "Camada de Dados" as CD
+end box
+
+box "Infra" #e8f4f8
+    participant "PostgreSQL (DB)" as DB
+end box
+
+== Fluxo: Editar Meu Post ==
+
+User -> UI : Altera descrição/status do post
+activate UI
+UI -> CI : PATCH /me/posts/{id} (new_data)
+activate CI
+CI -> CI : Valida Entrada (PostUpdateSchema)
+alt Dados Inválidos
+    CI --> UI : 400 Bad Request
+    UI --> User : Exibe alertas nos campos
+else Dados Ok
+    CI -> CN : Atualiza post (new_data)
+    activate CN
+    CN -> CN : Valida Posse (user_id == post.user_id)
+    alt Não é o dono
+        CN --> CI : Erro autenticação
+        CI --> UI : 403 Forbidden
+        UI --> User : "Não tem autorização."
+    else É o dono
+        CN -> CD : Update do post
+        activate CD
+        CD -> DB : UPDATE posts SET...
+        activate DB
+        DB --> CD : Sucesso
+        deactivate DB
+        CD --> CN : Sucesso
+        deactivate CD
+        CN --> CI : Sucesso
+        deactivate CN
+        CI --> UI : 200 OK
+        UI --> User : "Post atualizado!"
+    end
+end
+@enduml

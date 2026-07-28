@@ -1,67 +1,44 @@
 @startuml
+autonumber
 skinparam style strictuml
-skinparam sequenceMessageAlign center
 
 actor "Usuário" as User
-participant "Frontend (React)" as FE
-participant "API Flask" as API
-participant "Auth Middleware" as Auth
-participant "Post Service" as SVC
-participant "Supabase Storage" as Cloud
-database "PostgreSQL" as DB
+boundary "Frontend" as UI
 
-User -> FE : Preenche dados e anexa fotos
-FE -> API : POST /posts (multipart/form-data)
-activate API
+box "Backend" #f9f9f9
+    control "Controller" as Ctrl <<control>>
+    control "Service" as Serv <<service>>
+    collections "Repository" as Repo <<repository>>
+end box
 
-API -> Auth : Valida JWT Token
-activate Auth
+box "Infra" #e8f4f8
+    database "PostgreSQL (DB)" as DB
+end box
 
-alt Token Inválido ou Expirado
-    Auth --> API : Erro de Autenticação
-    API --> FE : HTTP 401 (Unauthorized)
-    FE -> User : Redireciona para Login
-else Token Válido
-    Auth --> API : User ID
-    deactivate Auth
+== Fluxo: Fazer uma Postagem ==
 
-    API -> SVC : create_post(user_id, data, files)
-    activate SVC
+User -> UI++: Preenche dados (data)
+UI -> Ctrl++: POST /me/posts (token, data)
+Ctrl -> Ctrl++--: Valida entrada (PostCreateSchema)
 
-    SVC -> DB : INSERT INTO posts (status='pending')
-    activate DB
-    DB --> SVC : post_id
-    deactivate DB
-
-    loop para cada imagem
-        SVC -> Cloud : Upload binário
-        activate Cloud
-
-        alt Falha no Upload (Supabase fora ou erro de rede)
-            Cloud --> SVC : Erro de Upload
-            SVC -> DB : DELETE FROM posts WHERE id=post_id
-            SVC --> API : Falha no Upload
-            API --> FE : HTTP 500 (Erro no Storage)
-            FE -> User : Mensagem: "Erro ao subir imagens. Tente novamente."
-        else Upload Sucesso
-            Cloud --> SVC : URL da imagem
-            deactivate Cloud
-            SVC -> DB : INSERT INTO images (post_id, url)
-            activate DB
-            DB --> SVC : Sucesso
-            deactivate DB
-        end
-    end
-
-    SVC -> DB : UPDATE posts SET status='active'
-    activate DB
-    DB --> SVC : Sucesso
-    deactivate DB
-
-    SVC --> API : Post Criado
-    deactivate SVC
-    API --> FE : HTTP 201 Created
-    deactivate API
-    FE -> User : Sucesso!
+alt Dados inválidos ou incompletos
+    note right of Ctrl #f8d7da: **raise** ValidationError
 end
+
+group ref
+    note right of Ctrl #fff3cd: **Fluxo:** Autenticação e Autorização
+end
+
+Ctrl -> Serv++: Criar Post (user_id, data)
+Serv -> Repo++: Salvar Post (user_id, data,\nstatus=active)
+Repo -> DB++: Cria Post (user_id, data)
+DB --> Repo--: Post
+Repo --> Serv--: Post
+Serv --> Ctrl--: Post
+Ctrl -> Ctrl++--: Aplica PostResponseSchema (Post)
+Ctrl --> UI--: PostResponse
+note right of UI #d4edda: **Status:** 201 Created
+UI -> UI++--: Oferece a opção de\nupload de imagens
+note right of UI #fff3cd: **Ponto de extensão:**\nUpload de Imagens
+UI --> User--: Postagem criada
 @enduml

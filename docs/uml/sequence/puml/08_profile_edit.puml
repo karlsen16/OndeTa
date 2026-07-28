@@ -1,0 +1,57 @@
+@startuml
+autonumber
+skinparam style strictuml
+
+actor "Usuário" as User
+boundary "Frontend" as UI
+
+box "Backend" #f9f9f9
+    control "Controller" as Ctrl <<control>>
+    control "Service" as Serv <<service>>
+    collections "Repository" as Repo <<repository>>
+end box
+
+box "Infra" #e8f4f8
+    database "PostgreSQL (DB)" as DB
+end box
+
+== Fluxo: Editar Meu Perfil ==
+
+User -> UI++: Acessa edição de perfil
+UI -> UI++--: Exibe perfil
+User -> UI: Altera as informações do perfil (data)
+UI -> Ctrl++: PATCH /me (token, data)
+Ctrl -> Ctrl++--: Valida entrada (UserUpdateSchema)
+
+alt Dados inválidos ou incompletos
+    note right of Ctrl #f8d7da: **raise** ValidationError
+end
+
+group ref
+    note right of Ctrl #fff3cd: **Fluxo:** Autenticação e Autorização
+end
+
+Ctrl -> Serv++: Atualizar User (user_id, data)
+Serv -> Serv++--: Verifica se houve alteração do email (data)
+
+opt Alteração do email
+    Serv -> Repo++: Constatar (email)
+    Repo -> DB++: Verifica existência (email)
+    DB --> Repo--: True / False
+    Repo --> Serv--: True / False
+
+    alt Email já cadastrado
+        note right of Serv #f8d7da: **raise** ConflictError
+    end
+end
+
+Serv -> Repo++: Editar User (user_id, data)
+Repo -> DB++: Atualiza User (user_id, data)
+DB --> Repo--: User
+Repo --> Serv--: User
+Serv --> Ctrl--: User
+Ctrl -> Ctrl++--: Aplica UserResponseSchema (User)
+Ctrl --> UI--: UserResponse
+note right of UI #d4edda: **Status:** 200 OK
+UI --> User--: Exibe informações do perfil
+@enduml

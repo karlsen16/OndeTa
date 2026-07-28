@@ -1,0 +1,59 @@
+@startuml
+autonumber
+skinparam style strictuml
+
+actor "Visitante" as Guest
+boundary "Frontend" as UI
+
+box "Backend" #f9f9f9
+    control "post_controller" as Ctrl <<control>>
+    control "post_service" as Serv <<service>>
+    collections "post_repository" as Repo <<repository>>
+end box
+
+box "Infra" #e8f4f8
+    database "PostgreSQL (DB)" as DB
+end box
+
+== Fluxo: Visualizar Mapa ==
+
+Guest -> UI++: Acessa mapa
+
+opt Utiliza filtros
+    Guest -> UI : Define filtros (params)
+end
+
+UI -> Ctrl++: GET /posts/pins?params
+Ctrl -> Ctrl++--: Valida entrada (PinsRequestSchema)
+
+alt Parâmetros inválidos ou incompletos
+    note right of Ctrl #f8d7da: **raise** ValidationError
+end
+
+Ctrl -> Ctrl++--: Aplica valores padrão (params)
+Ctrl -> Serv++: get_pins(params)
+Serv -> Repo++: get_feed(params, pagination=False)
+note right of Repo #fff3cd
+Monta consulta dinâmica
+utilizando filtros e regras
+de visibilidade.
+Retorna apenas os dados
+necessários para os pins
+end note
+
+Repo -> DB++: Obtém Pins (params)
+DB --> Repo--: Pins
+Repo --> Serv--: Pins
+Serv -> Serv++--: Verifica densidade (Pins)
+
+alt Excede limite
+    note right of Serv #f8d7da: **raise** DensityLimitError
+end
+
+Serv --> Ctrl--: Pins
+Ctrl -> Ctrl++--: Aplica PinResponseSchema (Pins)
+Ctrl --> UI--: 0..* PinResponse
+note right of UI #d4edda: **Status:** 200 OK
+UI --> Guest--: Exibe mapa com pins
+note right of Guest #fff3cd: **Ponto de extensão:**\nVisualização de Detalhes no Mapa
+@enduml

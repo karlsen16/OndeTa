@@ -12,3 +12,8 @@ def register():
 @auth_bp.route("/login", methods=["POST"])
 def login():
     return AuthController.login()
+
+
+@auth_bp.route("/reactivate", methods=["POST"])
+def reactivate():
+    return AuthController.login(reactivation=True)

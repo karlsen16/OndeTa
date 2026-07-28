@@ -1,0 +1,78 @@
+@startuml
+autonumber
+skinparam style strictuml
+
+actor "Visitante" as Guest
+actor "Usuário" as User
+boundary "Frontend" as UI
+
+box "Backend" #f9f9f9
+    control "post_controller" as Ctrl <<control>>
+    control "post_service" as Serv <<service>>
+    collections "post_repository" as Repo <<repository>>
+end box
+
+box "Infra" #e8f4f8
+    database "PostgreSQL (DB)" as DB
+end box
+
+== Fluxo: Exibir Postagem no Mapa ==
+
+alt Visualização pública
+
+    group ref
+        note right of User #fff3cd: **Origem de extensão:**\nUC3 ou UC4 - Visualização de Detalhes no Mapa
+    end
+    Guest -> UI++: Seleciona a opção de visualizar\ndetalhes de uma postagem (post_id)
+    UI -> Ctrl++: GET /posts/:post_id
+    Ctrl -> Serv++: get_post(post_id)
+
+else Visualização privada
+
+    group ref
+        note right of User #fff3cd: **Origem de extensão:**\nUC10 - Visualização de Detalhes no Mapa
+    end
+    User -> UI: Seleciona a opção de visualizar\ndetalhes de uma postagem (post_id, token)
+    UI -> Ctrl: GET /me/posts/:post_id
+
+    group ref
+        note right of Ctrl #fff3cd: **Fluxo:** Autenticação e Autorização
+    end
+
+    Ctrl -> Serv: get_post_for_user(post_id, user)
+end
+
+Serv -> Repo++: get_post(post_id)
+Repo -> DB++: Obtém Post (post_id)
+DB --> Repo--: Post / Null
+Repo --> Serv--: Post / Null
+
+alt Post não encontrado
+    note right of Serv #f8d7da: **raise** NotFoundError
+end
+
+note right of Serv #fff3cd
+Só é permitido visualizar
+uma postagem pública ou
+que pertence ao usuário solicitando ou
+se for um administrador
+end note
+
+Serv -> Serv++--: Verifica visibilidade da postagem
+
+alt Sem permissão de visualização
+    note right of Serv #f8d7da: **raise** NotFoundError
+    note right of Serv #fff3cd
+    **Aplicação da RN14:**
+    Ofuscação de Recursos Privados
+    end note
+end
+
+Serv --> Ctrl--: Post
+Ctrl -> Ctrl++--: Aplica PostResponseSchema (Post)
+Ctrl --> UI--: PostResponse
+note right of UI #d4edda: **Status:** 200 OK
+UI -> UI++--: Abre visualização do mapa
+UI -> UI++--: Centraliza mapa (coordinates)
+UI -> UI++--: Destaca postagem selecionada
+@enduml

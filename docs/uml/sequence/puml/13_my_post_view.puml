@@ -48,31 +48,4 @@ else Dados Ok
         UI --> User : "Post atualizado!"
     end
 end
-== Fluxo: Excluir Minha Conta ==
-
-User -> UI : Clica em "Excluir Conta"
-UI -> CI : DELETE /me
-CI -> CN : Deletar Usuário (user_id)
-activate CN
-CN -> CN : Valida Posse (user_id == post.user_id)
-
-alt Não é o dono
-        CN --> CI : Erro autenticação
-        CI --> UI : 403 Forbidden
-        UI --> User : "Não tem autorização."
-    else É o dono
-        CN -> CD : Soft Delete
-        activate CD
-        CD -> DB : UPDATE users SET status = "inactive" WHERE id = user_id
-        activate DB
-        DB --> CD : Sucesso
-        deactivate DB
-        CD --> CN : Sucesso
-        deactivate CD
-        CN --> CI : Sucesso
-        deactivate CN
-        CI --> UI : 204 Sucesso
-        UI --> User : Redireciona para Home (Logout)
-        deactivate UI
-    end
 @enduml

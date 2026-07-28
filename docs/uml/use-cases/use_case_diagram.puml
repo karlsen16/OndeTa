@@ -16,71 +16,74 @@ rectangle "Sistema de Busca de Pets: OndeTa?" {
   }
   package "Área Pública" {
     usecase "Visualizar Feed" as UC3
-    usecase "Filtrar Resultados" as UC3.1
-    usecase "Exibir Postagem no Mapa" as UC3.2
+    usecase "Exibir Postagem no Mapa" as UC3.1
     usecase "Visualizar Mapa" as UC4
   }
   package "Painel do Usuário" {
-    usecase "Visualizar Meu Perfil" as UC5
-    usecase "Editar Meu Perfil" as UC6
-    usecase "Desativar Minha Conta" as UC7
-    usecase "Alterar Minha Senha" as UC8
+    package "Perfil" {
+        usecase "Visualizar Meu Perfil" as UC5
+        usecase "Editar Meu Perfil" as UC6
+        usecase "Desativar Minha Conta" as UC7
+        usecase "Alterar Minha Senha" as UC8
+    }
+    package "Postagens" {
+        usecase "Fazer uma Postagem" as UC9
+        usecase "Adicionar Imagens à Postagem" as UC9.1
 
-    usecase "Fazer uma Postagem" as UC9
-    usecase "Adicionar Imagens à Postagem" as UC9.1
-
-    usecase "Visualizar Minhas Postagens" as UC10
-    usecase "Editar Minha Postagem" as UC11
-    usecase "Remover Imagens da Minha Postagem" as UC11.1
+        usecase "Visualizar Minhas Postagens" as UC10
+        usecase "Editar Minha Postagem" as UC11
+        usecase "Remover Imagens da Minha Postagem" as UC11.1
+    }
   }
   package "Moderação" {
-    usecase "Visualizar Usuários" as UC12
-    usecase "Moderar Usuário" as UC13
-    usecase "Restaurar / Banir Usuário" as UC13.1
-
-    usecase "Visualizar Postagens" as UC14
-    usecase "Moderar Postagem" as UC15
-    usecase "Remover Imagens da Postagem" as UC16
+    package "Usuários" {
+        usecase "Visualizar Usuários" as UC12
+        usecase "Moderar Usuário" as UC13
+        usecase "Restaurar / Banir Usuário" as UC13.1
+    }
+    package "Conteúdo" {
+        usecase "Visualizar Postagens" as UC14
+        usecase "Moderar Postagem" as UC15
+        usecase "Remover Imagens da Postagem" as UC16
+    }
   }
 }
 
 ' Relacionamentos do Visitante
 Guest -- UC1
-Guest -up- UC2
+Guest -left- UC2
 UC2.1 .up.> UC2 : <<extend>>
 
 Guest -right- UC3
 UC3.1 .up.> UC3 : <<extend>>
-UC3.2 .up.> UC3 : <<extend>>
 
-Guest -left- UC4
+Guest -- UC4
 UC3.1 .up.> UC4 : <<extend>>
-UC3.2 .up.> UC4 : <<extend>>
 
 ' Relacionamentos do Usuário Autenticado
 User -left-|> Guest
 
-User -right- UC5
-UC6 .up.> UC5 : <<include>>
-UC7 .right.> UC5 : <<include>>
-UC8 .up.> UC5 : <<include>>
+User -- UC5
+User -- UC6
+User -left- UC7
+User -- UC8
 
-User -- UC9
+User -right- UC9
 UC9.1 .up.> UC9 : <<extend>>
 
 User -- UC10
-UC3.2 .up.> UC10 : <<extend>>
-UC11 .up.> UC10 : <<include>>
-UC9.1 .right.> UC11 : <<extend>>
-UC11.1 .left.> UC11 : <<extend>>
+UC3.1 .up.> UC10 : <<extend>>
+User -- UC11
+UC9.1 .up.> UC11 : <<extend>>
+UC11.1 .up.> UC11 : <<extend>>
 
 ' Relacionamentos do  Admin
 Admin -left-|> User
 
-Admin -- UC12
+Admin -right- UC12
 Admin -- UC13
 UC13.1 .up.> UC13 : <<extend>>
-Admin -- UC14
-Admin -- UC15
+Admin -left- UC14
+Admin -left- UC15
 Admin -- UC16
 @enduml

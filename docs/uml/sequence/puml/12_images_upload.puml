@@ -1,46 +1,80 @@
 @startuml
 skinparam style strictuml
-skinparam sequenceMessageAlign center
 
 actor "Usuário" as User
-participant "Frontend (React)" as FE
-participant "API Flask" as API
-participant "Auth Service" as Auth
-database "PostgreSQL" as DB
-participant "Supabase Storage" as Cloud
+boundary "Frontend" as UI
 
-User -> FE : Clica em "Remover Foto"
-FE -> API : DELETE /me/images/{img_id}
-activate API
+box "Backend" #f9f9f9
+    control "Controller" as Ctrl <<control>>
+    control "Service" as Serv <<service>>
+    collections "Repository" as Repo <<repository>>
+end box
 
-API -> Auth : Valida Token JWT
-activate Auth
-Auth --> API : User ID (do token)
-deactivate Auth
+box "Infra" #e8f4f8
+    database "Storage" as Cloud
+    database "PostgreSQL (DB)" as DB
+end box
 
-API -> DB : Busca Imagem + Post Relacionado
-activate DB
-DB --> API : Dados da Imagem (Owner ID, URL)
-deactivate DB
+== Fluxo: Adicionar Imagens à Postagem ==
 
-alt Usuário é dono da imagem?
-    API -> API : Compara Owner ID == User ID
+UI -[hidden]-> UI++
 
-    API -> Cloud : Solicita exclusão do arquivo (URL)
-    activate Cloud
-    Cloud --> API : Confirmação (204 No Content)
-    deactivate Cloud
-
-    API -> DB : DELETE FROM images WHERE id={img_id}
-    activate DB
-    DB --> API : Sucesso
-    deactivate DB
-
-    API --> FE : HTTP 204 (Sucesso)
-else Não é o dono
-    API --> FE : HTTP 403 (Forbidden)
+group ref
+    note right of UI #fff3cd: **Origem de extensão:**\nUC9 ou UC11 - Upload de Imagens
 end
 
-deactivate API
-FE -> User : Atualiza galeria na tela
+autonumber
+User -> UI: Envia imagens (files)
+UI -> Ctrl++: POST /me/posts/:post_id/images\n(token, files)
+Ctrl -> Ctrl++--: Valida entrada (ImageCreateSchema)
+
+alt Dados inválidos ou incompletos
+    note right of Ctrl #f8d7da: **raise** ValidationError
+end
+
+Ctrl -> Ctrl++--: Valida formato (files)
+
+alt Arquivo Inválido
+    note right of Ctrl #f8d7da: **raise** ValidationError
+end
+
+Ctrl -> Ctrl++--: Valida entrada (ImageCreateSchema)
+
+alt Dados inválidos ou incompletos
+    note right of Ctrl #f8d7da: **raise** ValidationError
+end
+
+Ctrl -> Ctrl++--: Valida entrada (ImageCreateSchema)
+
+alt Dados inválidos ou incompletos
+    note right of Ctrl #f8d7da: **raise** ValidationError
+end
+
+group ref
+    note right of Ctrl #fff3cd: **Fluxo:** Autenticação e Autorização
+end
+
 @enduml
+
+loop para cada imagem
+Serv -> Cloud : Upload binário
+activate Cloud
+
+alt Falha no Upload (Supabase fora ou erro de rede)
+Cloud --> Serv : Erro de Upload
+Serv -> DB : DELETE FROM posts WHERE id=post_id
+Serv --> Ctrl : Falha no Upload
+Ctrl --> UI : HTTP 500 (Erro no Storage)
+UI -> User : Mensagem: "Erro ao subir imagens. Tente novamente."
+else Upload Sucesso
+Cloud --> Serv : URL da imagem
+deactivate Cloud
+Serv -> DB : INSERT INTO images (post_id, url)
+activate DB
+DB --> Serv : Sucesso
+deactivate DB
+
+Serv -> DB : UPDATE posts SET status='active'
+activate DB
+DB --> Serv : Sucesso
+deactivate DB

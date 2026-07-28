@@ -1,0 +1,61 @@
+@startuml
+autonumber
+skinparam style strictuml
+
+box "Backend" #f9f9f9
+    control "auth_controller" as Ctrl <<control>>
+    control "auth_service" as Serv <<service>>
+    collections "user_repository" as Repo <<repository>>
+end box
+
+box "Infra" #e8f4f8
+    database "PostgreSQL (DB)" as DB
+end box
+
+== Fluxo: Autenticação e Autorização ==
+
+[-> Ctrl++: Chamada que exige autenticação\ne autorização
+
+    Ctrl -> Ctrl++--: verify_jwt_in_request()
+alt Token inválido, expirado ou ausente
+    note right of Ctrl #f8d7da: **raise** UnauthorizedError
+end
+
+alt Valida o IP (claims.ip != request.remote_addr)
+    note right of Ctrl #f8d7da: **raise** UnauthorizedError
+end
+
+note right of Ctrl #fff3cd
+*Parâmetros de Contexto:
+- **admin_required**: se True, exige role admin (padrão: False)
+- **include_assets**: se True, traz posts associados (padrão: False)
+- **lean**: se True, traz apenas colunas essenciais (padrão: False)
+end note
+
+Ctrl -> Serv++: get_aa_user(user_id, user_role, context)
+Serv -> Repo++: get_user(user_id, include_assets, lean)
+Repo -> DB++: Obtém User (user_id,context)
+DB --> Repo--: User / Null
+Repo --> Serv--: User / Null
+
+alt Usuário não encontrado
+    note right of Serv #f8d7da: **raise** UnauthorizedError
+end
+
+alt Verifica integridade (user_role != User.role)
+    note right of Serv #f8d7da: **raise** ForbiddenError
+end
+
+opt Operação exclusiva para administradores\n(admin_required = True)
+    alt Papel (User.role) não é admin
+        note right of Serv #f8d7da: **raise** ForbiddenError
+    end
+end
+
+alt Verifica status (User.status != "active")
+    note right of Serv #f8d7da: **raise** ForbiddenError
+end
+
+Serv --> Ctrl--: Autenticado e Autorizado (User)
+note right of Ctrl #fff3cd: Validações concluídas com sucesso.\nProssegue para o caso de uso.
+@enduml
