@@ -1,0 +1,52 @@
+@startuml
+autonumber
+skinparam style strictuml
+
+actor "Visitante" as Guest
+boundary "Frontend" as UI
+
+box "Backend" #f9f9f9
+    control "post_controller" as Ctrl <<control>>
+    control "post_service" as Serv <<service>>
+    collections "post_repository" as Repo <<repository>>
+end box
+
+box "Infra" #e8f4f8
+    database "PostgreSQL (DB)" as DB
+end box
+
+== Fluxo: Visualizar Feed ==
+
+Guest -> UI++: Acessa feed
+
+opt Utiliza filtros
+    Guest -> UI : Define filtros (params)
+end
+
+UI -> Ctrl++: GET /posts?params
+Ctrl -> Ctrl++--: Valida entrada (FeedRequestSchema)
+
+alt Parâmetros inválidos ou incompletos
+    note right of Ctrl #f8d7da: **raise** ValidationError
+end
+
+Ctrl -> Ctrl++--: Aplica valores padrão e paginação (params)
+Ctrl -> Serv++: get_feed(params)
+Serv -> Repo++: get_feed(params)
+note right of Repo #fff3cd
+Monta consulta dinâmica
+utilizando filtros,
+paginação e regras
+de visibilidade
+end note
+
+Repo -> DB++: Obtém Posts (params)
+DB --> Repo--: Posts
+Repo --> Serv--: Posts
+Serv --> Ctrl--: pagination_metadata, Posts
+Ctrl -> Ctrl++--: Aplica PostResponseSchema (Posts)
+Ctrl --> UI--: pagination_metadata, 0..* PostResponse
+note right of UI #d4edda: **Status:** 200 OK
+UI --> Guest--: Exibe cards no Feed
+note right of Guest #fff3cd: **Ponto de extensão:**\nVisualização de Detalhes no Mapa
+@enduml

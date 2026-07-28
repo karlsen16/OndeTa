@@ -19,9 +19,9 @@
 
 - **[RN06] Propriedade de Conteúdo (Ownership):** Operações de modificação de postagens são permitidas apenas ao autor da postagem ou a usuários com papel `admin`. Para postagens com status `blocked`, apenas administradores podem realizar modificações.
 
-- **[RN07] Visibilidade Pública:** Apenas postagens com status `active` ou `resolved` são exibidas no feed e no mapa público.
+- **[RN07] Visibilidade Pública:** Somente postagens públicas podem ser retornadas por mecanismos públicos de listagem, busca e visualização coletiva.
 
-- **[RN08] Restrição de Postagens `blocked`:** Postagens marcadas como `blocked` pela moderação tornam-se imutáveis para o autor original. O autor pode visualizá-las em seu painel, mas não pode editar seus conteúdos ou alterar seu status.
+- **[RN08] Restrição de Postagens `blocked`:** O autor pode visualizar suas postagens `blocked`, incluindo seus detalhes e localização geográfica, mas não pode editar seus conteúdos, imagens ou alterar seu status.
 
 - **[RN09] Efeito Cascata de Inatividade:** Sempre que um usuário transicionar para `inactive` ou `banned`, o sistema deve automaticamente alterar o status de todas as suas postagens `active` ou `resolved` para `hidden`.
 
@@ -35,12 +35,12 @@
 
 - **[RN12] Autorização de Upload:** O sistema deve validar se o usuário autenticado é o proprietário da postagem de destino antes de aceitar e processar arquivos de imagem.
 
-- **[RN13] Sincronia de Exclusão:** A remoção de um registro de imagem no banco de dados exige, em sequência, a remoção física imediata e correspondente do arquivo armazenado.
+- **[RN13] Sincronia de Exclusão:** A exclusão de uma imagem deve garantir a remoção do arquivo armazenado e do respectivo registro persistido, impedindo inconsistências entre armazenamento e banco de dados.
 
 ---
 
 # 4. Moderação e Segurança de Dados
 
-- **[RN14] Ofuscação de Recursos Privados:** Para evitar a mineração de dados, tentativas de acesso a postagens `hidden` ou `blocked` por usuários que não sejam o dono ou admin devem retornar erro `404 Not Found`, simulando a inexistência do recurso.
+- **[RN14] Ofuscação de Recursos Privados:** Postagens que não sejam públicas podem ser acessadas apenas pelo autor da postagem ou por usuários com papel `admin`. Tentativas de acesso por quaisquer outros usuários devem retornar erro `404 Not Found`, simulando a inexistência do recurso.
 
-- **[RN15] Limite de Imagens:** Cada postagem pode possuir no máximo 3 imagens associadas.
+- **[RN15] Limite de Imagens:** Cada postagem pode possuir no máximo 3 imagens associadas simultaneamente.

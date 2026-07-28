@@ -1,0 +1,25 @@
+@startuml
+autonumber
+skinparam style strictuml
+
+actor "Usuário" as User
+boundary "Frontend" as UI
+
+box "Backend" #f9f9f9
+    control "Controller" as Ctrl <<control>>
+end box
+
+== Fluxo: Visualizar Meu Perfil ==
+
+User -> UI++: Acessa a área de perfil
+UI -> Ctrl++: GET /me (token)
+
+group ref
+    note right of Ctrl #fff3cd: **Fluxo:** Autenticação e Autorização
+end
+
+Ctrl -> Ctrl++--: Aplica UserResponseSchema (User)
+Ctrl --> UI--: UserResponse
+note right of UI #d4edda: **Status:** 200 OK
+UI --> User--: Exibe informações do perfil
+@enduml

@@ -6,7 +6,6 @@ from flask_jwt_extended import jwt_required
 
 me_bp = Blueprint("me", __name__, url_prefix="/me")
 
-# --- PERFIL ---
 
 @me_bp.route("", methods=["GET"])
 @jwt_required()
@@ -53,3 +52,12 @@ def add_image_to_post(post_id):
 def delete_my_post_image(image_id):
     """Remove uma imagem específica (DELETE real, como planejado)."""
     return ImageController.delete_image(image_id)
+
+@post_bp.route("", methods=["POST"])
+@jwt_required()
+def create_post():
+    """
+    Cria um novo post.
+    O user_id será extraído do token pelo Controller.
+    """
+    return PostController.create_post()
