@@ -1,0 +1,153 @@
+.create-post-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ede9f8;
+  padding: 1rem;
+}
+
+.create-post-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(91, 74, 138, 0.15);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.create-post-logo {
+  width: 180px;
+  margin-bottom: 1rem;
+}
+
+.create-post-title {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.25rem;
+  color: #4a3b6b;
+  margin: 0 0 1.5rem;
+  text-align: center;
+}
+
+.create-post-category-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.create-post-category-btn {
+  padding: 0.9rem;
+  border: 1.5px solid #c4b8e8;
+  border-radius: 10px;
+  background-color: #f9f7ff;
+  color: #4a3b6b;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.create-post-category-btn:hover {
+  border-color: #9b8fd4;
+}
+
+.create-post-category-btn--selected {
+  border-color: #4a3b6b;
+  background-color: #ede9f8;
+}
+
+.create-post-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.create-post-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.create-post-field label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #5b4a8a;
+}
+
+.create-post-optional {
+  font-weight: 400;
+  color: #b0a4cc;
+}
+
+.create-post-field input,
+.create-post-field select,
+.create-post-field textarea {
+  padding: 0.65rem 0.875rem;
+  border: 1.5px solid #c4b8e8;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+  background-color: #f9f7ff;
+  color: #2e1f4f;
+  resize: vertical;
+}
+
+.create-post-field input:focus,
+.create-post-field select:focus,
+.create-post-field textarea:focus {
+  border-color: #9b8fd4;
+  background-color: #ffffff;
+}
+
+.create-post-geo-btn {
+  padding: 0.65rem;
+  border: 1.5px dashed #9b8fd4;
+  border-radius: 8px;
+  background-color: #f9f7ff;
+  color: #4a3b6b;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.create-post-geo-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.create-post-error {
+  font-size: 0.875rem;
+  color: #c0392b;
+  background-color: #fdecea;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  margin: 0;
+}
+
+.create-post-submit-btn {
+  padding: 0.75rem;
+  background-color: #4a3b6b;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.create-post-submit-btn:hover:not(:disabled) {
+  background-color: #362b52;
+}
+
+.create-post-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}

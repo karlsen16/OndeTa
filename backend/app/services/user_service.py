@@ -1,6 +1,9 @@
 from app.extensions import db
 from app.models.user import User
 from werkzeug.exceptions import NotFound
+from werkzeug.security import generate_password_hash, check_password_hash
+from app.repositories.user_repository import UserRepository
+from app.utils.exceptions import UnauthorizedError
 
 
 class UserService:
@@ -8,6 +11,14 @@ class UserService:
     @staticmethod
     def get_user_by_id(user_id):
         return User.query.get_or_404(user_id)
+
+    @staticmethod
+    def update_password(user, old_password, new_password):
+        if not check_password_hash(user.password, old_password):
+            raise UnauthorizedError("Senha atual incorreta.")
+
+        hashed_password = generate_password_hash(new_password)
+        return UserRepository.update(user, {"password": hashed_password})
 
     @staticmethod
     def update_profile(user_id, data):

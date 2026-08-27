@@ -6,8 +6,8 @@ import logo from '../../assets/Logo-ondeta-v1.png';
 import './styles.css';
 
 const STATUS_LABEL = {
-  lost: 'Perdido',
-  found: 'Encontrado',
+  perdido: 'Perdido',
+  encontrado: 'Encontrado',
 };
 
 function PetCard({ pet, onDelete }) {
@@ -22,12 +22,12 @@ function PetCard({ pet, onDelete }) {
   return (
     <div className="feed-card">
       <div className="feed-card-header">
-        <span className={`feed-badge feed-badge--${pet.status}`}>
-          {STATUS_LABEL[pet.status] ?? pet.status}
+        <span className={`feed-badge feed-badge--${pet.category}`}>
+          {STATUS_LABEL[pet.category] ?? pet.category}
         </span>
-        {pet.type && <span className="feed-card-type">{pet.type}</span>}
+        {pet.pet_type && <span className="feed-card-type">{pet.pet_type}</span>}
       </div>
-      <h3 className="feed-card-name">{pet.name}</h3>
+      <h3 className="feed-card-name">{pet.pet_name}</h3>
       {pet.description && (
         <p className="feed-card-description">{pet.description}</p>
       )}
@@ -73,10 +73,10 @@ export default function Feed() {
     setLoading(true);
     setError('');
     try {
-      const response = await api.get('/pets');
-      setPets(response.data);
+      const response = await api.get('/posts');
+      setPets(response.data.posts);
     } catch (err) {
-      setError(err.response?.data?.error || 'Erro ao carregar pets');
+      setError(err.response?.data?.message || 'Erro ao carregar pets');
     } finally {
       setLoading(false);
     }
@@ -86,12 +86,12 @@ export default function Feed() {
     setMyPostsLoading(true);
     setMyPostsError('');
     try {
-      const response = await api.get('/pets', {
-        params: { user_id: user.id }
+      const response = await api.get('/posts', {
+        params: { limit: 100 }
       });
-      setMyPets(response.data);
+      setMyPets(response.data.posts.filter((p) => p.author?.id === user.id));
     } catch (err) {
-      setMyPostsError(err.response?.data?.error || 'Erro ao carregar suas postagens');
+      setMyPostsError(err.response?.data?.message || 'Erro ao carregar suas postagens');
     } finally {
       setMyPostsLoading(false);
     }
@@ -138,6 +138,9 @@ export default function Feed() {
             onClick={handle_toggle_my_posts}
           >
             Minhas postagens
+          </button>
+          <button className="feed-nav-btn" onClick={() => navigate('/create-post')}>
+            Criar postagem
           </button>
           <button className="feed-nav-btn" onClick={() => navigate('/profile')}>
             Meu perfil

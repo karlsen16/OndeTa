@@ -31,7 +31,7 @@ class AuthController:
             raise UnauthorizedError("Acesso negado. Origem da requisição inválida.")
 
         context = {
-            "user_id": claims.get("sub"),
+            "user_id": int(claims.get("sub")),
             "user_role": claims.get("role"),
             "admin_required": admin_required,
             "include_assets": include_assets,

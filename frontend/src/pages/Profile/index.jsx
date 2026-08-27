@@ -35,8 +35,7 @@ export default function Profile() {
 
   async function fetch_profile() {
     try {
-      // Simplificado com api.get
-      const response = await api.get(`/users/${user.id}`);
+      const response = await api.get('/me');
       setProfile(response.data);
     } catch (err) {
       setError(err.response?.data?.error || 'Erro ao carregar perfil');
@@ -63,8 +62,8 @@ export default function Profile() {
     setPasswordLoading(true);
 
     try {
-      await api.put(`/users/${user.id}/password`, {
-        current_password: currentPassword,
+      await api.patch('/me/password', {
+        old_password: currentPassword,
         new_password: newPassword
       });
 
@@ -73,7 +72,7 @@ export default function Profile() {
       setNewPassword('');
       setConfirmPassword('');
     } catch (err) {
-      setPasswordError(err.response?.data?.error || 'Erro ao redefinir senha');
+      setPasswordError(err.response?.data?.message || err.response?.data?.error || 'Erro ao redefinir senha');
     } finally {
       setPasswordLoading(false);
     }
@@ -109,6 +108,9 @@ export default function Profile() {
           </button>
           <button className="profile-header-btn" onClick={() => navigate('/feed', { state: { showMyPosts: true } })}>
             Minhas postagens
+          </button>
+          <button className="profile-header-btn" onClick={() => navigate('/create-post')}>
+            Criar postagem
           </button>
           <button className="profile-header-btn profile-header-btn--active">
             Meu perfil

@@ -1,15 +1,24 @@
 from flask import request, jsonify
 from app.services.post_service import PostService
-from app.schemas.post_schema import FeedRequestSchema, PinsRequestSchema, PostResponseSchema, PinResponseSchema
+from app.schemas.post_schema import FeedRequestSchema, PinsRequestSchema, PostResponseSchema, PinResponseSchema, PostCreateSchema
 from app.controllers.auth_controller import AuthController
 
 feed_schema = FeedRequestSchema()
 pins_schema = PinsRequestSchema()
 post_response = PostResponseSchema()
 pins_response = PinResponseSchema(many=True)
+post_create_schema = PostCreateSchema()
 
 
 class PostController:
+    @staticmethod
+    def create_post():
+        user = AuthController.authenticate_and_authorize(lean=True)
+        data = post_create_schema.load(request.get_json())
+        post = PostService.create_post(data, user.id)
+        return jsonify(post_response.dump(post)), 201
+
+
     @staticmethod
     def get_feed():
         params = feed_schema.load(request.args)

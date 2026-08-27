@@ -19,6 +19,12 @@ def update_my_profile():
     """Atualiza dados do perfil (PATCH para alteração parcial)."""
     return UserController.update_current_user()
 
+@me_bp.route("/password", methods=["PATCH"])
+@jwt_required()
+def update_my_password():
+    """Redefine a senha do usuário logado."""
+    return UserController.update_password()
+
 # --- MEUS POSTS ---
 
 @me_bp.route("/posts", methods=["GET"])
@@ -52,12 +58,3 @@ def add_image_to_post(post_id):
 def delete_my_post_image(image_id):
     """Remove uma imagem específica (DELETE real, como planejado)."""
     return ImageController.delete_image(image_id)
-
-@post_bp.route("", methods=["POST"])
-@jwt_required()
-def create_post():
-    """
-    Cria um novo post.
-    O user_id será extraído do token pelo Controller.
-    """
-    return PostController.create_post()

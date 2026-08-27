@@ -3,6 +3,7 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Profile from '../pages/Profile';
 import Feed from '../pages/Feed';
+import CreatePost from '../pages/CreatePost';
 
 export default function AppRoutes() {
   return (
@@ -12,6 +13,7 @@ export default function AppRoutes() {
       <Route path="/register" element={<Register />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/feed" element={<Feed />} />
+      <Route path="/create-post" element={<CreatePost />} />
     </Routes>
   );
 }

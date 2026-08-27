@@ -33,7 +33,7 @@ class AuthService:
     @staticmethod
     def _generate_token(user, ip_address):
         return create_access_token(
-            identity=user.id,
+            identity=str(user.id),
             additional_claims= {
                 "role": user.role,
                 "ip": ip_address

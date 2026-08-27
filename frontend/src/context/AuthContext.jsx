@@ -10,7 +10,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const savedUser = localStorage.getItem('@App:user');
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      setUser(JSON.parse(savedUser).user);
     }
     setLoading(false);
   }, []);
@@ -21,7 +21,7 @@ export function AuthProvider({ children }) {
       const response = await api.post('/auth/login', { email, password });
       const data = response.data;
 
-      setUser(data);
+      setUser(data.user);
       localStorage.setItem('@App:user', JSON.stringify(data));
 
       return data;

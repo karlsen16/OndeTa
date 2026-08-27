@@ -43,6 +43,10 @@ class PostService:
         return pins
 
     @staticmethod
+    def create_post(data, user_id):
+        return PostRepository.create({**data, "user_id": user_id})
+
+    @staticmethod
     def get_post(post_id, user=None):
         post = PostRepository.get_post(post_id)
 
